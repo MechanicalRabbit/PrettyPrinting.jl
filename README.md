@@ -41,80 +41,6 @@ julia> function pkgtree(pkg)
        end
 
 julia> tree = pkgtree(PPrint)
-12-element Array{Any,1}:
- ".git" => Any["branches"=>Any[], "hooks"=>Any["applypatch-msg.sample", "commit-
-msg.sample", "fsmonitor-watchman.sample", "post-update.sample", "pre-applypatch.
-sample", "pre-commit.sample", "pre-push.sample", "pre-rebase.sample", "pre-recei
-ve.sample", "prepare-commit-msg.sample", "update.sample"], "info"=>Any["exclude"
-], "objects"=>Any["info"=>Any[], "pack"=>Any[]], "refs"=>Any["heads"=>Any[], "ta
-gs"=>Any[]], "HEAD", "config", "description"]
-  "doc" => Any["src"=>Any["index.md"], ".gitignore", "make.jl"]
-
-
-
-
-
-  "src" => Any["PPrint.jl", "fit.jl", "tile.jl"]
-
-
-
-
-
- "test" => Any["doc"=>Any[], "coverage.jl", "runtests.jl"]
-
-
-
-
-
-         ".appveyor.yml"
-
-
-
-
-
-         ".codecov.yml"
-
-
-
-
-
-         ".gitignore"
-
-
-
-
-
-         ".travis.yml"
-
-
-
-
-
-         "LICENSE.md"
-
-
-
-
-
-         "Project.toml"
-
-
-
-
-         "README.md"
-
-
-
-
-
-         "REQUIRE"
-```
-
-The output is garbled because the tree does not fit the output terminal.
-
-By contrast, `PPrint.pprint()` respects the width of the output screen.
-
-```julia
 julia> pprint(tree)
 [".git" => ["branches" => [],
             "hooks" => ["applypatch-msg.sample",
@@ -146,6 +72,10 @@ julia> pprint(tree)
  "README.md",
  "REQUIRE"]
 ```
+
+PPrint supports many built-in data structures such as vectors and dictionaries.
+Custom data types should implement `PPrint.tile()` as shown in the
+[**documentation**][doc-dev-url].
 
 
 # Acknowledgements
