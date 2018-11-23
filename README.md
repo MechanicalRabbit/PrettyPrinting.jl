@@ -22,10 +22,8 @@ julia> Pkg.clone("https://github.com/rbt-lang/PPrint.jl")
 julia> using PPrint
 ```
 
-Now you can use `PPrint.pprint()` to display complex data structures that are
-poorly represented by Julia.
-
-Let us demonstrate it by printing the directory tree of a Julia package.
+Now you can use `PPrint.pprint()` to display complex data structures.  For
+example, let us display the directory tree of a Julia package.
 
 ```julia
 julia> function pkgtree(pkg)
