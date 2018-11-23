@@ -4,3 +4,9 @@ uuid = "db3ad36c-ec73-11e8-397c-91c865de92e2"
 version = "0.1.0"
 
 [deps]
+
+[extras]
+NarrativeTest = "cbff20e0-65a7-11e8-3e6b-953888476f54"
+
+[targets]
+test = ["NarrativeTest"]
