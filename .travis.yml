@@ -1,0 +1,32 @@
+# See https://github.com/JuliaLang/Example.jl/blob/master/.travis.yml
+
+language: julia
+
+os:
+- linux
+- osx
+
+julia:
+- 1.0
+- nightly
+
+notifications:
+  email: false
+
+env:
+  global:
+  - DOCUMENTER_DEBUG=true
+
+after_success:
+# push coverage results
+- julia -e 'using Pkg; cd(Pkg.dir("PPrint")); include("test/coverage.jl")'
+
+jobs:
+  include:
+  # deploy documentation
+  - stage: "Documentation"
+    os: linux
+    julia: 1.0
+    script:
+    - julia -e 'using Pkg; cd(Pkg.dir("PPrint")); include("doc/make.jl")'
+    after_success: skip

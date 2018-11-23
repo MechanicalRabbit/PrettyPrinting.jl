@@ -1,0 +1,6 @@
+authors = ["Kirill Simonov <xi@resolvent.net>"]
+name = "PPrint"
+uuid = "db3ad36c-ec73-11e8-397c-91c865de92e2"
+version = "0.1.0"
+
+[deps]
