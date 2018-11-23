@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Home · PPrint.jl</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link href="assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>PPrint.jl</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li class="current"><a class="toctext" href>Home</a><ul class="internal"><li><a class="toctext" href="#Overview-1">Overview</a></li><li class="toplevel"><a class="toctext" href="#Acknowledgements-1">Acknowledgements</a></li><li><a class="toctext" href="#API-Reference-1">API Reference</a></li><li><a class="toctext" href="#Test-Suite-1">Test Suite</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Home</a></li></ul><a class="edit-page" href="https://github.com/rbt-lang/PPrint.jl/blob/master/doc/src/index.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Home</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="PPrint.jl-1" href="#PPrint.jl-1">PPrint.jl</a></h1><h2><a class="nav-anchor" id="Overview-1" href="#Overview-1">Overview</a></h2><p>Module <code>PPrint</code> implements a pretty-printing engine for visualizing composite data structures.</p><pre><code class="language-julia">using PPrint</code></pre><p>To format a data structure, we need to encode its possible layouts in the form of a <em>layout expression</em>.</p><p>A fixed single-line layout is created with <code>PPrint.literal()</code>.</p><pre><code class="language-julia">ll = PPrint.literal(&quot;department&quot;)
+#-&gt; literal(&quot;department&quot;)</code></pre><p>PPrint could be combined using horizontal and vertical composition operators.</p><pre><code class="language-julia">lhz = PPrint.literal(&quot;department&quot;) * PPrint.literal(&quot;.&quot;) * PPrint.literal(&quot;name&quot;)
+#-&gt; literal(&quot;department&quot;) * literal(&quot;.&quot;) * literal(&quot;name&quot;)
+
+lvt = PPrint.literal(&quot;department&quot;) / PPrint.literal(&quot;name&quot;)
+#-&gt; literal(&quot;department&quot;) / literal(&quot;name&quot;)</code></pre><p>Function <code>PPrint.pprint()</code> serializes the layout.</p><pre><code class="language-julia">pprint(ll)
+#-&gt; department
+
+pprint(lhz)
+#-&gt; department.name
+
+pprint(lvt)
+#=&gt;
+department
+name
+=#</code></pre><p>To indicate that we can choose between several different layouts, use the choice operator.</p><pre><code class="language-julia">l = lhz | lvt
+#=&gt;
+literal(&quot;department&quot;) * literal(&quot;.&quot;) * literal(&quot;name&quot;)
+| literal(&quot;department&quot;) / literal(&quot;name&quot;)
+=#</code></pre><p>The pretty-printing engine can search through possible layouts to find the best fit, which is expressed as a layout expression without a choice operator.</p><pre><code class="language-julia">PPrint.best(PPrint.fit(l))
+#-&gt; literal(&quot;department&quot;) * (literal(&quot;.&quot;) * literal(&quot;name&quot;))</code></pre><h1><a class="nav-anchor" id="Acknowledgements-1" href="#Acknowledgements-1">Acknowledgements</a></h1><p>The algorithm for finding the optimal layout is based upon <a href="https://ai.google/research/pubs/pub44667">Phillip Yelland, A New Approach to Optimal Code Formatting, 2016</a>.</p><h2><a class="nav-anchor" id="API-Reference-1" href="#API-Reference-1">API Reference</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="PPrint.pprint" href="#PPrint.pprint"><code>PPrint.pprint</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">PPrint.pprint([io::IO], data)</code></pre><p>Displays the data so that it fits the width of the output screen.</p></div></div><a class="source-link" target="_blank" href="https://github.com/rbt-lang/PPrint.jl/blob/dd40ab64c736638853848831cca8fb4f77861994/src/PPrint.jl#L28-L32">source</a></section><h2><a class="nav-anchor" id="Test-Suite-1" href="#Test-Suite-1">Test Suite</a></h2><p>We start with creating a simple tree structure.</p><pre><code class="language-julia">struct Node
+    name::Symbol
+    arms::Vector{Node}
+end
+
+Node(name) = Node(name, [])
+
+tree =
+    Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
+                           Node(:anchovy),
+                           Node(:antic, [Node(:anticipation)])]),
+               Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
+               Node(:awl)])
+#-&gt; Node(:a, Main.index.md.Node[ … ])</code></pre><p>To specify a layout expression for <code>Node</code> objects, we need to override <code>PPrint.tile()</code>.  Layout expressions are assembled from <code>PPrint.literal()</code> primitives using operators <code>*</code> (horizontal composition), <code>/</code> (vertical composition), and <code>|</code> (choice).</p><pre><code class="language-julia">function PPrint.tile(tree::Node)
+    if isempty(tree.arms)
+        return PPrint.literal(&quot;Node($(repr(tree.name)))&quot;)
+    end
+    arm_lts = [PPrint.tile(arm) for arm in tree.arms]
+    return PPrint.list_layout(arm_lts, prefix=&quot;Node($(repr(tree.name)), &quot;, par=(&quot;[&quot;, &quot;])&quot;))
+end</code></pre><p>Now we can use function <code>pprint()</code> to render a nicely formatted representation of the tree.</p><pre><code class="language-julia">pprint(stdout, tree)
+#=&gt;
+Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
+                     Node(:anchovy),
+                     Node(:antic, [Node(:anticipation)])]),
+          Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
+          Node(:awl)])
+=#</code></pre><p>We can control the width of the output.</p><pre><code class="language-julia">pprint(IOContext(stdout, :displaysize =&gt; (24, 60)), tree)
+#=&gt;
+Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage),
+                                    Node(:anchorite)]),
+                     Node(:anchovy),
+                     Node(:antic, [Node(:anticipation)])]),
+          Node(:arc, [Node(:arch, [Node(:archduke),
+                                   Node(:archer)])]),
+          Node(:awl)])
+=#</code></pre><p>We can display the layout expression itself, both the original and the optimized variants.</p><pre><code class="language-julia">PPrint.tile(tree)
+#=&gt;
+(literal(&quot;Node(:a, [&quot;) | literal(&quot;Node(:a, [&quot;) / indent(4))
+* (((literal(&quot;Node(:an, [&quot;) | literal(&quot;Node(:an, [&quot;) / indent(4))
+    * (((literal(&quot;Node(:anchor, [&quot;) | literal(&quot;Node(:anchor, [&quot;) / indent(4))
+   ⋮
+=#
+
+PPrint.best(PPrint.fit(stdout, PPrint.tile(tree)))
+#=&gt;
+literal(&quot;Node(:a, [&quot;)
+* (literal(&quot;Node(:an, [&quot;)
+   * (literal(&quot;Node(:anchor, [&quot;)
+   ⋮
+=#</code></pre><p>For some built-in data structures, automatic layout is already provided.</p><pre><code class="language-julia">data = [
+    (name = &quot;RICHARD A&quot;, position = &quot;FIREFIGHTER&quot;, salary = 90018),
+    (name = &quot;DEBORAH A&quot;, position = &quot;POLICE OFFICER&quot;, salary = 86520),
+    (name = &quot;KATHERINE A&quot;, position = &quot;PERSONAL COMPUTER OPERATOR II&quot;, salary = 60780)
+]
+
+pprint(data)
+#=&gt;
+[(name = &quot;RICHARD A&quot;, position = &quot;FIREFIGHTER&quot;, salary = 90018),
+ (name = &quot;DEBORAH A&quot;, position = &quot;POLICE OFFICER&quot;, salary = 86520),
+ (name = &quot;KATHERINE A&quot;,
+  position = &quot;PERSONAL COMPUTER OPERATOR II&quot;,
+  salary = 60780)]
+=#</code></pre><footer><hr/></footer></article></body></html>
