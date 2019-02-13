@@ -7,8 +7,13 @@ os:
 - osx
 
 julia:
-- 1.0
+- 1.0   # LTS release
+- 1.1   # Current stable release
 - nightly
+
+matrix:
+  allow_failures:
+  - julia: nightly
 
 notifications:
   email: false
