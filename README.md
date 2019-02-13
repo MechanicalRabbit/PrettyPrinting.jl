@@ -13,67 +13,72 @@ on a fixed-width terminal.*
 
 # Quick Start
 
-Install the package by cloning the package repository:
+Install the package using the Julia package manager:
 
 ```julia
 julia> using Pkg
-julia> Pkg.clone("https://github.com/rbt-lang/PPrint.jl")
+julia> Pkg.add("PPrint")
+```
 
+To start using the package, import it:
+
+```julia
 julia> using PPrint
 ```
 
-Now you can use `PPrint.pprint()` to display complex data structures.  For
-example, let us display the directory tree of a Julia package.
+Display complex data structures using the function `PPrint.pprint()`.  For
+example:
 
 ```julia
-julia> function pkgtree(pkg)
-           top = dirname(dirname(pathof(pkg)))
-           roots = Dict(top => [])
-           for (root, dirs, files) in walkdir(top)
-               append!(roots[root], [
-                   [dir => (roots[joinpath(root, dir)] = []) for dir in dirs];
-                   files
-               ])
-           end
-           roots[top]
-       end
+julia> data = [(name = "POLICE",
+                employees = [(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing),
+                             (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)]),
+               (name = "FIRE",
+                employees = [(name = "JAMES A", position = "FIRE ENGINEER-EMT", salary = 103350, rate = missing),
+                             (name = "DANIEL A", position = "FIRE FIGHTER-EMT", salary = 95484, rate = missing)]),
+               (name = "OEMC",
+                employees = [(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68),
+                             (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])];
 
-julia> tree = pkgtree(PPrint)
-julia> pprint(tree)
-[".git" => ["branches" => [],
-            "hooks" => ["applypatch-msg.sample",
-                        "commit-msg.sample",
-                        "fsmonitor-watchman.sample",
-                        "post-update.sample",
-                        "pre-applypatch.sample",
-                        "pre-commit.sample",
-                        "pre-push.sample",
-                        "pre-rebase.sample",
-                        "pre-receive.sample",
-                        "prepare-commit-msg.sample",
-                        "update.sample"],
-            "info" => ["exclude"],
-            "objects" => ["info" => [], "pack" => []],
-            "refs" => ["heads" => [], "tags" => []],
-            "HEAD",
-            "config",
-            "description"],
- "doc" => ["src" => ["index.md"], ".gitignore", "make.jl"],
- "src" => ["PPrint.jl", "fit.jl", "tile.jl"],
- "test" => ["doc" => [], "coverage.jl", "runtests.jl"],
- ".appveyor.yml",
- ".codecov.yml",
- ".gitignore",
- ".travis.yml",
- "LICENSE.md",
- "Project.toml",
- "README.md",
- "REQUIRE"]
+julia> data
+3-element Array{NamedTuple{(:name, :employees),T} where T<:Tuple,1}:
+ (name = "POLICE", employees = NamedTuple{(:name, :position, :salary, :rate),Tuple{String,String,Int64,Missing}}[(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing), (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)])
+ (name = "FIRE", employees = NamedTuple{(:name, :position, :salary, :rate),Tuple{String,String,Int64,Missing}}[(name = "JAMES A", position = "FIRE ENGINEER-EMT", salary = 103350, rate = missing), (name = "DANIEL A", position = "FIRE FIGHTER-EMT", salary = 95484, rate = missing)])
+ (name = "OEMC", employees = NamedTuple{(:name, :position, :salary, :rate),Tuple{String,String,Missing,Float64}}[(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68), (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])
+
+julia> pprint(data)
+[(name = "POLICE",
+  employees = [(name = "JEFFERY A",
+                position = "SERGEANT",
+                salary = 101442,
+                rate = missing),
+               (name = "NANCY A",
+                position = "POLICE OFFICER",
+                salary = 80016,
+                rate = missing)]),
+ (name = "FIRE",
+  employees = [(name = "JAMES A",
+                position = "FIRE ENGINEER-EMT",
+                salary = 103350,
+                rate = missing),
+               (name = "DANIEL A",
+                position = "FIRE FIGHTER-EMT",
+                salary = 95484,
+                rate = missing)]),
+ (name = "OEMC",
+  employees = [(name = "LAKENYA A",
+                position = "CROSSING GUARD",
+                salary = missing,
+                rate = 17.68),
+               (name = "DORIS A",
+                position = "CROSSING GUARD",
+                salary = missing,
+                rate = 19.38)])]
 ```
 
-PPrint supports many built-in data structures such as vectors and dictionaries.
-Custom data types should implement `PPrint.tile()` as shown in the
-[**documentation**][doc-dev-url].
+PPrint supports built-in data structures such as tuples, vectors, and
+dictionaries.  Custom data types should implement `PPrint.tile()` as shown in
+the [**documentation**][doc-dev-url].
 
 
 # Acknowledgements
