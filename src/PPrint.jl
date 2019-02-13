@@ -6,7 +6,6 @@
 module PPrint
 
 export
-    PPrinter,
     pprint
 
 import Base:
@@ -15,8 +14,6 @@ import Base:
     size,
     show,
     *, /, |
-
-const PPrinter = Any
 
 const DEFAULT_LINE_WIDTH = 79
 const DEFAULT_BREAK_COST = 1
