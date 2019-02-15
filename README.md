@@ -11,7 +11,7 @@ on a fixed-width terminal.*
 [![MIT License][license-img]][license-url]
 
 
-# Quick Start
+## Quick Start
 
 Install the package using the Julia package manager:
 
@@ -76,12 +76,12 @@ julia> pprint(data)
                 rate = 19.38)])]
 ```
 
-PPrint supports built-in data structures such as tuples, vectors, and
-dictionaries.  Custom data types should implement `PPrint.tile()` as shown in
-the [**documentation**][doc-dev-url].
+PPrint knows how to format tuples, vectors, and dictionaries.  Other data types
+should implement `PPrint.tile()` as shown in the
+[**documentation**][doc-dev-url].
 
 
-# Acknowledgements
+## Acknowledgements
 
 The algorithm for finding the optimal layout is based upon
 [Phillip Yelland, A New Approach to Optimal Code Formatting, 2016][rfmt-paper].

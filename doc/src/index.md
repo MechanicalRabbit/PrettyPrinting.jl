@@ -3,58 +3,139 @@
 
 ## Overview
 
-Module `PPrint` implements a pretty-printing engine for visualizing composite
-data structures.
+`PPrint` is a Julia library for optimal formatting of composite data structures
+on a fixed-width terminal.
+
+
+### Installation
+
+Use the Julia package manager.
+
+```julia
+julia> using Pkg
+julia> Pkg.add("PPrint")
+```
+
+
+### Using `PPrint`
+
+First, import the module.
 
     using PPrint
+
+Use the function `pprint()` to print composite data structures formed of nested
+tuples, vectors, and dictionaries.
+
+To demonstrate `pprint()`, we create a small dataset of city departments with
+associated employees.
+
+    data = [(name = "POLICE",
+             employees = [(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing),
+                          (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)]),
+            (name = "FIRE",
+             employees = [(name = "JAMES A", position = "FIRE ENGINEER-EMT", salary = 103350, rate = missing),
+                          (name = "DANIEL A", position = "FIRE FIGHTER-EMT", salary = 95484, rate = missing)]),
+            (name = "OEMC",
+             employees = [(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68),
+                          (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])]
+
+The built-in `print()` function prints this data on a single line, making the
+output unreadable.
+
+    print(data)
+    #-> NamedTuple{(:name, :employees),T} where T<:Tuple[(name = "POLICE", employees = NamedTuple{ … }[ … ]) … ]
+
+By contrast, `pprint()` formats the data to fit the screen size.
+
+    pprint(data)
+    #=>
+    [(name = "POLICE",
+      employees = [(name = "JEFFERY A",
+                    position = "SERGEANT",
+                    salary = 101442,
+                    rate = missing),
+                   (name = "NANCY A",
+                    position = "POLICE OFFICER",
+                    salary = 80016,
+                    rate = missing)]),
+     (name = "FIRE",
+      employees = [(name = "JAMES A",
+                    position = "FIRE ENGINEER-EMT",
+                    salary = 103350,
+                    rate = missing),
+                   (name = "DANIEL A",
+                    position = "FIRE FIGHTER-EMT",
+                    salary = 95484,
+                    rate = missing)]),
+     (name = "OEMC",
+      employees = [(name = "LAKENYA A",
+                    position = "CROSSING GUARD",
+                    salary = missing,
+                    rate = 17.68),
+                   (name = "DORIS A",
+                    position = "CROSSING GUARD",
+                    salary = missing,
+                    rate = 19.38)])]
+    =#
+
+
+### Extending `PPrint`
+
+`PPrint` supports built-in data structures such as tuples, vectors, and
+dictionaries.  It is possible to extend `PPrint` to support custom data
+structures.
 
 To format a data structure, we need to encode its possible layouts in the form
 of a *layout expression*.
 
 A fixed single-line layout is created with `PPrint.literal()`.
 
-    ll = PPrint.literal("department")
-    #-> literal("department")
+    ll = PPrint.literal("salary")
+    #-> literal("salary")
 
-PPrint could be combined using horizontal and vertical composition operators.
+Layouts could be combined using horizontal (`*`) and vertical (`/`) composition
+operators.
 
-    lhz = PPrint.literal("department") * PPrint.literal(".") * PPrint.literal("name")
-    #-> literal("department") * literal(".") * literal("name")
+    lhz = PPrint.literal("salary") * PPrint.literal(" = ") * PPrint.literal("101442")
+    #-> literal("salary") * literal(" = ") * literal("101442")
 
-    lvt = PPrint.literal("department") / PPrint.literal("name")
-    #-> literal("department") / literal("name")
+    lvt = PPrint.literal("salary") * PPrint.literal(" = ") /
+          PPrint.indent(4) * PPrint.literal("101442")
+    #-> literal("salary") * literal(" = ") / indent(4) * literal("101442")
+
+Here, `PPrint.indent(4)` is equivalent to `PPrint.literal(" "^4)`.
 
 Function `PPrint.pprint()` serializes the layout.
 
     pprint(ll)
-    #-> department
+    #-> salary
 
     pprint(lhz)
-    #-> department.name
+    #-> salary = 101442
 
     pprint(lvt)
     #=>
-    department
-    name
+    salary =
+        101442
     =#
 
-To indicate that we can choose between several different layouts, use the
-choice operator.
+To indicate that we can choose between several different layouts, we use the
+choice (`|`) operator.
 
     l = lhz | lvt
     #=>
-    literal("department") * literal(".") * literal("name")
-    | literal("department") / literal("name")
+    literal("salary") * literal(" = ") * literal("101442") |
+    literal("salary") * literal(" = ") / indent(4) * literal("101442")
     =#
 
 The pretty-printing engine can search through possible layouts to find the best
 fit, which is expressed as a layout expression without a choice operator.
 
     PPrint.best(PPrint.fit(l))
-    #-> literal("department") * (literal(".") * literal("name"))
+    #-> literal("salary") * (literal(" = ") * literal("101442"))
 
 
-# Acknowledgements
+## Acknowledgements
 
 The algorithm for finding the optimal layout is based upon
 [Phillip Yelland, A New Approach to Optimal Code Formatting, 2016](https://ai.google/research/pubs/pub44667).
@@ -129,18 +210,18 @@ optimized variants.
 
     PPrint.tile(tree)
     #=>
-    (literal("Node(:a, [") | literal("Node(:a, [") / indent(4))
-    * (((literal("Node(:an, [") | literal("Node(:an, [") / indent(4))
-        * (((literal("Node(:anchor, [") | literal("Node(:anchor, [") / indent(4))
-       ⋮
+    (literal("Node(:a, [") | literal("Node(:a, [") / indent(4)) *
+    (((literal("Node(:an, [") | literal("Node(:an, [") / indent(4)) *
+      (((literal("Node(:anchor, [") | literal("Node(:anchor, [") / indent(4)) *
+        ⋮
     =#
 
     PPrint.best(PPrint.fit(stdout, PPrint.tile(tree)))
     #=>
-    literal("Node(:a, [")
-    * (literal("Node(:an, [")
-       * (literal("Node(:anchor, [")
-       ⋮
+    literal("Node(:a, [") *
+    (literal("Node(:an, [") *
+     (literal("Node(:anchor, [") *
+      ⋮
     =#
 
 For some built-in data structures, automatic layout is already provided.

@@ -204,9 +204,9 @@ function tile_layout(blk::Union{HorizontalBlock, VerticalBlock, ChoiceBlock}, ar
         first = false
     end
     par = precedence > precedence′ ? ("(", ")") : ("", "")
-    sep = blk isa HorizontalBlock ? (" * ", "* ", "") :
-          blk isa VerticalBlock ? (" / ", "/ ", "") :
-          blk isa ChoiceBlock ? (" | ", "| ", "") : ("", "", "")
+    sep = blk isa HorizontalBlock ? (" * ", "", " *") :
+          blk isa VerticalBlock ? (" / ", "", " /") :
+          blk isa ChoiceBlock ? (" | ", "", " |") : ("", "", "")
     return list_layout(items, par=par, sep=sep)
 end
 
