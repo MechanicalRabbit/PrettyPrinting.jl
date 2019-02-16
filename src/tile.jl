@@ -42,8 +42,8 @@ let NO_ARGS = Layout[],
     literal(str::String) =
         Layout(LiteralBlock(str, textwidth(str)), NO_ARGS)
 
-    literal(sym::Symbol) =
-        literal(string(sym))
+    literal(str::Union{AbstractString,Symbol}) =
+        literal(string(str))
 
     literal(atom, len::Int) =
         Layout(LiteralBlock(atom, len), NO_ARGS)
@@ -51,6 +51,8 @@ let NO_ARGS = Layout[],
     indent(i::Int) =
         1 <= i <= length(INDENTS) ? INDENTS[i] : Layout(LiteralBlock(" " ^ i, i), NO_ARGS)
 end
+
+const ZERO = literal("")
 
 # Visualization.
 
@@ -60,7 +62,15 @@ show(io::IO, lt::Layout) =
 # Layout combinators.
 
 (*)(lt::Layout, lts::Layout...) =
-    Layout(HorizontalBlock(), collect(Layout, (lt, lts...)))
+    let lts = filter(!isequal(ZERO), collect(Layout, (lt, lts...)))
+        if isempty(lts)
+            ZERO
+        elseif length(lts) == 1
+            lts[1]
+        else
+            Layout(HorizontalBlock(), lts)
+        end
+    end
 
 (/)(lt::Layout, lts::Layout...) =
     Layout(VerticalBlock(), collect(Layout, (lt, lts...)))
@@ -104,15 +114,17 @@ end
 
 function list_layout(items::Vector{Layout};
                      prefix::Union{String,Symbol}="",
-                     suffix::Union{String,Symbol}="",
                      par::Tuple{String,String}=("(", ")"),
-                     sep::Tuple{String,String,String}=(", ", "", ","),
+                     sep::String=", ",
+                     sep_brk=:end,  # :start, :end, :both, or :none
                      tab::Int=4,
                      nobrk::Int=10)
-    !isempty(items) || return literal("$(prefix)$(par[1])$(par[2])$(suffix)")
+    !isempty(items) || return literal("$(prefix)$(par[1])$(par[2])")
     head_lt = literal("$(prefix)$(par[1])")
-    tail_lt = literal("$(par[2])$(suffix)")
-    sepc_lt, sepl_lt, sepr_lt = map(literal, sep)
+    tail_lt = literal("$(par[2])")
+    sepc_lt = literal(sep)
+    sepl_lt = literal(sep_brk == :start || sep_brk == :both ? lstrip(sep) : "")
+    sepr_lt = literal(sep_brk == :end || sep_brk == :both ? rstrip(sep) : "")
     tab_lt = indent(tab)
     vlt = items[1]
     #hlt = penalize(items[1], break_factor=nobrk)
@@ -130,9 +142,12 @@ end
 
 function pair_layout(fst::Layout,
                      snd::Layout;
-                     sep::Tuple{String,String,String}=(" => ", "", " =>"),
+                     sep::String=" => ",
+                     sep_brk=:end,  # :start, :end, :both, or :none
                      tab::Int=4)
-    sepc_lt, sepl_lt, sepr_lt = map(literal, sep)
+    sepc_lt = literal(sep)
+    sepl_lt = literal(sep_brk == :start || sep_brk == :both ? lstrip(sep) : "")
+    sepr_lt = literal(sep_brk == :end || sep_brk == :both ? rstrip(sep) : "")
     tab_lt = indent(tab)
     (fst * sepc_lt * snd) | ((fst * sepr_lt) / (tab_lt * sepl_lt * snd))
 end
@@ -147,13 +162,17 @@ tile(p::Pair) =
     pair_layout(tile(p.first), tile(p.second))
 
 tile(t::Tuple) =
-    list_layout(Layout[tile(x) for x in t])
+    if length(t) == 1
+        literal("(") * tile(t[1]) * literal(",)")
+    else
+        list_layout(Layout[tile(x) for x in t])
+    end
 
 tile(v::Vector) =
     list_layout(Layout[tile(x) for x in v], par=("[", "]"))
 
 tile(t::NamedTuple) =
-    list_layout(Layout[pair_layout(literal(key), tile(val), sep=(" = ", "", " ="))
+    list_layout(Layout[pair_layout(literal(key), tile(val), sep=" = ")
                        for (key, val) in pairs(t)])
 
 tile(d::Dict) =
@@ -204,9 +223,9 @@ function tile_layout(blk::Union{HorizontalBlock, VerticalBlock, ChoiceBlock}, ar
         first = false
     end
     par = precedence > precedence′ ? ("(", ")") : ("", "")
-    sep = blk isa HorizontalBlock ? (" * ", "", " *") :
-          blk isa VerticalBlock ? (" / ", "", " /") :
-          blk isa ChoiceBlock ? (" | ", "", " |") : ("", "", "")
+    sep = blk isa HorizontalBlock ? " * " :
+          blk isa VerticalBlock ? " / " :
+          blk isa ChoiceBlock ? " | " : ""
     return list_layout(items, par=par, sep=sep)
 end
 

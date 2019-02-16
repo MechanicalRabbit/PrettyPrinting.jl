@@ -24,10 +24,11 @@ First, import the module.
     using PPrint
 
 Use the function `pprint()` to print composite data structures formed of nested
-tuples, vectors, and dictionaries.
+tuples, vectors, and dictionaries.  The data will be formatted to fit the
+screen size.
 
-To demonstrate `pprint()`, we create a small dataset of city departments with
-associated employees.
+To demonstrate how to use `pprint()`, we create a small dataset of city
+departments with associated employees.
 
     data = [(name = "POLICE",
              employees = [(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing),
@@ -79,14 +80,11 @@ By contrast, `pprint()` formats the data to fit the screen size.
     =#
 
 
-### Extending `PPrint`
+### Layout expressions
 
-`PPrint` supports built-in data structures such as tuples, vectors, and
-dictionaries.  It is possible to extend `PPrint` to support custom data
-structures.
-
-To format a data structure, we need to encode its possible layouts in the form
-of a *layout expression*.
+`PPrint` can be extended to format any custom data structure.  To let `PPrint`
+format a data structure, we need to encode its possible layouts in the form of
+a *layout expression*.
 
 A fixed single-line layout is created with `PPrint.literal()`.
 
@@ -99,9 +97,9 @@ operators.
     lhz = PPrint.literal("salary") * PPrint.literal(" = ") * PPrint.literal("101442")
     #-> literal("salary") * literal(" = ") * literal("101442")
 
-    lvt = PPrint.literal("salary") * PPrint.literal(" = ") /
+    lvt = PPrint.literal("salary") * PPrint.literal(" =") /
           PPrint.indent(4) * PPrint.literal("101442")
-    #-> literal("salary") * literal(" = ") / indent(4) * literal("101442")
+    #-> literal("salary") * literal(" =") / indent(4) * literal("101442")
 
 Here, `PPrint.indent(4)` is equivalent to `PPrint.literal(" "^4)`.
 
@@ -125,7 +123,7 @@ choice (`|`) operator.
     l = lhz | lvt
     #=>
     literal("salary") * literal(" = ") * literal("101442") |
-    literal("salary") * literal(" = ") / indent(4) * literal("101442")
+    literal("salary") * literal(" =") / indent(4) * literal("101442")
     =#
 
 The pretty-printing engine can search through possible layouts to find the best
@@ -133,6 +131,31 @@ fit, which is expressed as a layout expression without a choice operator.
 
     PPrint.best(PPrint.fit(l))
     #-> literal("salary") * (literal(" = ") * literal("101442"))
+
+In addition, `PPrint` provides functions for generating common layouts.  A
+delimiter-separated pair can be generated with `PPrint.pair_layout()`.
+
+    PPrint.pair_layout(PPrint.literal("salary"),
+                       PPrint.literal("101442"),
+                       sep=" = ")
+    #=>
+    literal("salary") * literal(" = ") * literal("101442") |
+    literal("salary") * literal(" =") / (indent(4) * literal("101442"))
+    =#
+
+A delimiter-separated list of items can be generated with
+`PPrint.list_layout()`.
+
+    PPrint.list_layout([PPrint.literal("salary = 101442"),
+                        PPrint.literal("rate = missing")])
+    #=>
+    (literal("(") | literal("(") / indent(4)) *
+    (literal("salary = 101442") * literal(",") / literal("rate = missing")) *
+    literal(")") |
+    literal("(") *
+    (literal("salary = 101442") * literal(", ") * literal("rate = missing")) *
+    literal(")")
+    =#
 
 
 ## Acknowledgements

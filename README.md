@@ -26,8 +26,7 @@ To start using the package, import it:
 julia> using PPrint
 ```
 
-Display complex data structures using the function `PPrint.pprint()`.  For
-example:
+Use function `pprint()` to display complex data structures.  For example:
 
 ```julia
 julia> data = [(name = "POLICE",
