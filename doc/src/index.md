@@ -79,6 +79,23 @@ By contrast, `pprint()` formats the data to fit the screen size.
                     rate = 19.38)])]
     =#
 
+The width of the output is controlled by the `displaysize` property of the
+output stream.
+
+    pprint(IOContext(stdout, :displaysize => (24, 100)), data)
+    #=>
+    [(name = "POLICE",
+      employees = [(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing),
+                   (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)]),
+     (name = "FIRE",
+      employees =
+          [(name = "JAMES A", position = "FIRE ENGINEER-EMT", salary = 103350, rate = missing),
+           (name = "DANIEL A", position = "FIRE FIGHTER-EMT", salary = 95484, rate = missing)]),
+     (name = "OEMC",
+      employees = [(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68),
+                   (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])]
+    =#
+
 
 ### Layout expressions
 
@@ -132,15 +149,16 @@ fit, which is expressed as a layout expression without a choice operator.
     PPrint.best(PPrint.fit(l))
     #-> literal("salary") * (literal(" = ") * literal("101442"))
 
-In addition, `PPrint` provides functions for generating common layouts.  A
+In addition, `PPrint` provides functions for generating some common layouts.  A
 delimiter-separated pair can be generated with `PPrint.pair_layout()`.
 
     PPrint.pair_layout(PPrint.literal("salary"),
                        PPrint.literal("101442"),
                        sep=" = ")
     #=>
-    literal("salary") * literal(" = ") * literal("101442") |
-    literal("salary") * literal(" =") / (indent(4) * literal("101442"))
+    (literal("salary") * literal(" = ") |
+     literal("salary") * literal(" =") / indent(4)) *
+    literal("101442")
     =#
 
 A delimiter-separated list of items can be generated with
@@ -155,6 +173,55 @@ A delimiter-separated list of items can be generated with
     literal("(") *
     (literal("salary = 101442") * literal(", ") * literal("rate = missing")) *
     literal(")")
+    =#
+
+
+### Extending `PPrint`
+
+We can make `pprint()` format objects of user-defined types.  For this purpose,
+we must implement the function `PPrint.tile()`, which should map an object to
+its layout expression.
+
+For example, consider a simple tree structure.
+
+    struct Node
+        name::Symbol
+        arms::Vector{Node}
+    end
+
+    Node(name) = Node(name, [])
+
+    tree =
+        Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage),
+                                            Node(:anchorite)]),
+                             Node(:anchovy),
+                             Node(:antic, [Node(:anticipation)])]),
+                  Node(:arc, [Node(:arch, [Node(:archduke),
+                                           Node(:archer)])]),
+                  Node(:awl)])
+    #-> Node(:a, Main.index.md.Node[ … ])
+
+To make `pprint()` format this tree, we must implement the function
+`PPrint.tile(::Node)`.  A suitable layout expression for this tree could be
+generated with `PPrint.list_layout()`.
+
+    function PPrint.tile(tree::Node)
+        if isempty(tree.arms)
+            return PPrint.literal("Node($(repr(tree.name)))")
+        end
+        arm_lts = [PPrint.tile(arm) for arm in tree.arms]
+        return PPrint.list_layout(arm_lts, prefix="Node($(repr(tree.name)), ", par=("[", "])"))
+    end
+
+Now `pprint()` renders a nicely formatted representation of the tree.
+
+    pprint(stdout, tree)
+    #=>
+    Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
+                         Node(:anchovy),
+                         Node(:antic, [Node(:anticipation)])]),
+              Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
+              Node(:awl)])
     =#
 
 
@@ -175,45 +242,10 @@ PPrint.pprint
 
 We start with creating a simple tree structure.
 
-    struct Node
-        name::Symbol
-        arms::Vector{Node}
-    end
-
-    Node(name) = Node(name, [])
-
-    tree =
-        Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
-                               Node(:anchovy),
-                               Node(:antic, [Node(:anticipation)])]),
-                   Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
-                   Node(:awl)])
-    #-> Node(:a, Main.index.md.Node[ … ])
-
 To specify a layout expression for `Node` objects, we need to override
 `PPrint.tile()`.  Layout expressions are assembled from `PPrint.literal()`
 primitives using operators `*` (horizontal composition), `/` (vertical
 composition), and `|` (choice).
-
-    function PPrint.tile(tree::Node)
-        if isempty(tree.arms)
-            return PPrint.literal("Node($(repr(tree.name)))")
-        end
-        arm_lts = [PPrint.tile(arm) for arm in tree.arms]
-        return PPrint.list_layout(arm_lts, prefix="Node($(repr(tree.name)), ", par=("[", "])"))
-    end
-
-Now we can use function `pprint()` to render a nicely formatted representation
-of the tree.
-
-    pprint(stdout, tree)
-    #=>
-    Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
-                         Node(:anchovy),
-                         Node(:antic, [Node(:anticipation)])]),
-              Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
-              Node(:awl)])
-    =#
 
 We can control the width of the output.
 
