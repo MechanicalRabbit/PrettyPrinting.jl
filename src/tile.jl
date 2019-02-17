@@ -149,7 +149,7 @@ function pair_layout(fst::Layout,
     sepl_lt = literal(sep_brk == :start || sep_brk == :both ? lstrip(sep) : "")
     sepr_lt = literal(sep_brk == :end || sep_brk == :both ? rstrip(sep) : "")
     tab_lt = indent(tab)
-    (fst * sepc_lt * snd) | ((fst * sepr_lt) / (tab_lt * sepl_lt * snd))
+    ((nobreak(fst) * sepc_lt) | ((fst * sepr_lt) / (tab_lt * sepl_lt))) * snd
 end
 
 # Fallback layout.
