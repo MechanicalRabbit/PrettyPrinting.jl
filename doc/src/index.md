@@ -369,12 +369,17 @@ Finally, `pprint()` is implemented for dictionaries and named tuples.
      counterrevolutionaries = [:orientation, :interculture, :translucent])
     =#
 
-    pprint(Dict(pairs(nt)))
-    #=>
-    Dict(:deinstitutionalization =>
-             [:notation, :nation, :initialization, :intuition],
-         :counterrevolutionaries => [:orientation, :interculture, :translucent])
-    =#
+The following test has to be skipped because the order of entries in a
+dictionary is unstable.
+
+```julia
+pprint(Dict(pairs(nt)))
+#=>
+Dict(:deinstitutionalization =>
+         [:notation, :nation, :initialization, :intuition],
+     :counterrevolutionaries => [:orientation, :interculture, :translucent])
+=#
+```
 
 
 ### Using `pair_layout()`
