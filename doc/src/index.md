@@ -240,58 +240,285 @@ PPrint.pprint
 
 ## Test Suite
 
-We start with creating a simple tree structure.
+The following function overrides the width of the output terminal.
 
-To specify a layout expression for `Node` objects, we need to override
-`PPrint.tile()`.  Layout expressions are assembled from `PPrint.literal()`
-primitives using operators `*` (horizontal composition), `/` (vertical
-composition), and `|` (choice).
+    resize(w) = IOContext(stdout, :displaysize => (24, w))
 
-We can control the width of the output.
 
-    pprint(IOContext(stdout, :displaysize => (24, 60)), tree)
+### Formatting built-in data structures
+
+The function `pprint()` supports many built-in data structures.
+
+In particular, `pprint()` can format `Pair` objects.
+
+    p = :deinstitutionalization => :counterrevolutionaries
+
+    pprint(p)
+    #-> :deinstitutionalization => :counterrevolutionaries
+
+    pprint(resize(40), p)
     #=>
-    Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage),
-                                        Node(:anchorite)]),
-                         Node(:anchovy),
-                         Node(:antic, [Node(:anticipation)])]),
-              Node(:arc, [Node(:arch, [Node(:archduke),
-                                       Node(:archer)])]),
-              Node(:awl)])
+    :deinstitutionalization =>
+        :counterrevolutionaries
     =#
 
-We can display the layout expression itself, both the original and the
-optimized variants.
+`pprint(::Pair)` can handle composite keys and values.
 
-    PPrint.tile(tree)
+    p = :deinstitutionalization => [:notation, :nation, :initialization, :intuition]
+
+    pprint(p)
+    #-> :deinstitutionalization => [:notation, :nation, :initialization, :intuition]
+
+    pprint(resize(60), p)
     #=>
-    (literal("Node(:a, [") | literal("Node(:a, [") / indent(4)) *
-    (((literal("Node(:an, [") | literal("Node(:an, [") / indent(4)) *
-      (((literal("Node(:anchor, [") | literal("Node(:anchor, [") / indent(4)) *
-        ⋮
+    :deinstitutionalization =>
+        [:notation, :nation, :initialization, :intuition]
     =#
 
-    PPrint.best(PPrint.fit(stdout, PPrint.tile(tree)))
+    pprint(resize(50), p)
     #=>
-    literal("Node(:a, [") *
-    (literal("Node(:an, [") *
-     (literal("Node(:anchor, [") *
-      ⋮
+    :deinstitutionalization => [:notation,
+                                :nation,
+                                :initialization,
+                                :intuition]
     =#
 
-For some built-in data structures, automatic layout is already provided.
-
-    data = [
-        (name = "RICHARD A", position = "FIREFIGHTER", salary = 90018),
-        (name = "DEBORAH A", position = "POLICE OFFICER", salary = 86520),
-        (name = "KATHERINE A", position = "PERSONAL COMPUTER OPERATOR II", salary = 60780)
-    ]
-
-    pprint(data)
+    pprint(resize(40), p)
     #=>
-    [(name = "RICHARD A", position = "FIREFIGHTER", salary = 90018),
-     (name = "DEBORAH A", position = "POLICE OFFICER", salary = 86520),
-     (name = "KATHERINE A",
-      position = "PERSONAL COMPUTER OPERATOR II",
-      salary = 60780)]
+    :deinstitutionalization =>
+        [:notation,
+         :nation,
+         :initialization,
+         :intuition]
+    =#
+
+    p = [:orientation, :interculture, :translucent] => :counterrevolutionaries
+
+    pprint(p)
+    #-> [:orientation, :interculture, :translucent] => :counterrevolutionaries
+
+    pprint(resize(60), p)
+    #=>
+    [:orientation, :interculture, :translucent] =>
+        :counterrevolutionaries
+    =#
+
+    pprint(resize(40), p)
+    #=>
+    [:orientation,
+     :interculture,
+     :translucent] =>
+        :counterrevolutionaries
+    =#
+
+`pprint()` can also format tuples and vectors.
+
+    pprint(())
+    #-> ()
+
+    pprint([])
+    #-> []
+
+    pprint((:deinstitutionalization,))
+    #-> (:deinstitutionalization,)
+
+    pprint([:deinstitutionalization])
+    #-> [:deinstitutionalization]
+
+    t = (:notation, :nation, :initialization, :intuition)
+
+    pprint(t)
+    #-> (:notation, :nation, :initialization, :intuition)
+
+    pprint(collect(t))
+    #-> [:notation, :nation, :initialization, :intuition]
+
+    pprint(resize(40), t)
+    #=>
+    (:notation,
+     :nation,
+     :initialization,
+     :intuition)
+    =#
+
+    pprint(resize(40), collect(t))
+    #=>
+    [:notation,
+     :nation,
+     :initialization,
+     :intuition]
+    =#
+
+Finally, `pprint()` is implemented for dictionaries and named tuples.
+
+    pprint(Dict())
+    #-> Dict()
+
+    pprint((deinstitutionalization = :counterrevolutionaries,))
+    #-> (deinstitutionalization = :counterrevolutionaries,)
+
+    pprint(Dict(:deinstitutionalization => :counterrevolutionaries))
+    #-> Dict(:deinstitutionalization => :counterrevolutionaries)
+
+    nt = (deinstitutionalization = [:notation, :nation, :initialization, :intuition],
+          counterrevolutionaries = [:orientation, :interculture, :translucent])
+
+    pprint(nt)
+    #=>
+    (deinstitutionalization = [:notation, :nation, :initialization, :intuition],
+     counterrevolutionaries = [:orientation, :interculture, :translucent])
+    =#
+
+    pprint(Dict(pairs(nt)))
+    #=>
+    Dict(:deinstitutionalization =>
+             [:notation, :nation, :initialization, :intuition],
+         :counterrevolutionaries => [:orientation, :interculture, :translucent])
+    =#
+
+
+### Using `pair_layout()`
+
+Function `pair_layout()` generates a layout expression for `Pair`-like objects.
+
+    kl = PPrint.literal(:deinstitutionalization)
+    vl = PPrint.literal(:counterrevolutionaries)
+
+    pl = PPrint.pair_layout(kl, vl)
+
+    pprint(pl)
+    #-> deinstitutionalization => counterrevolutionaries
+
+    pprint(resize(40), pl)
+    #=>
+    deinstitutionalization =>
+        counterrevolutionaries
+    =#
+
+Use parameter `sep` to change the separator.
+
+    pprint(PPrint.pair_layout(kl, vl, sep=" -> "))
+    #-> deinstitutionalization -> counterrevolutionaries
+
+Parameter `sep_brk` controls the position of the separator with respect to the
+line break.
+
+    pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:start))
+    #=>
+    deinstitutionalization
+        => counterrevolutionaries
+    =#
+
+    pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:end))
+    #=>
+    deinstitutionalization =>
+        counterrevolutionaries
+    =#
+
+    pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:both))
+    #=>
+    deinstitutionalization =>
+        => counterrevolutionaries
+    =#
+
+    pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:none))
+    #=>
+    deinstitutionalization
+        counterrevolutionaries
+    =#
+
+Parameter `tab` specifies the indentation level.
+
+    pprint(resize(40), PPrint.pair_layout(kl, vl, tab=0))
+    #=>
+    deinstitutionalization =>
+    counterrevolutionaries
+    =#
+
+
+### Using `list_layout()`
+
+Function `list_layout()` generates a layout expression for list-like objects.
+
+    ls = PPrint.literal.([:notation, :nation, :initialization, :intuition])
+
+    ll = PPrint.list_layout(ls)
+
+    pprint(ll)
+    #-> (notation, nation, initialization, intuition)
+
+    pprint(resize(40), ll)
+    #=>
+    (notation,
+     nation,
+     initialization,
+     intuition)
+    =#
+
+Use parameter `prefix` to add a prefix to the list.  This is useful for
+generating functional notation.
+
+    pprint(resize(30), PPrint.list_layout(ls, prefix=:deinstitutionalization))
+    #=>
+    deinstitutionalization(
+        notation,
+        nation,
+        initialization,
+        intuition)
+    =#
+
+Parameter `par` specifies the left and the right parentheses.
+
+    pprint(PPrint.list_layout(ls, par=("[","]")))
+    #-> [notation, nation, initialization, intuition]
+
+Parameter `sep` to specifies the separator.
+
+    pprint(PPrint.list_layout(ls, sep=" * "))
+    #-> (notation * nation * initialization * intuition)
+
+Parameter `sep_brk` controls the position of separators with respect to
+line breaks.
+
+    pprint(resize(40), PPrint.list_layout(ls, sep_brk=:start))
+    #=>
+    (notation
+     , nation
+     , initialization
+     , intuition)
+    =#
+
+    pprint(resize(40), PPrint.list_layout(ls, sep_brk=:end))
+    #=>
+    (notation,
+     nation,
+     initialization,
+     intuition)
+    =#
+
+    pprint(resize(40), PPrint.list_layout(ls, sep_brk=:both))
+    #=>
+    (notation,
+     , nation,
+     , initialization,
+     , intuition)
+    =#
+
+    pprint(resize(40), PPrint.list_layout(ls, sep_brk=:none))
+    #=>
+    (notation
+     nation
+     initialization
+     intuition)
+    =#
+
+Parameter `tab` specifies the indentation level.
+
+    pprint(resize(30), PPrint.list_layout(ls, prefix=:deinstitutionalization, tab=0))
+    #=>
+    deinstitutionalization(
+    notation,
+    nation,
+    initialization,
+    intuition)
     =#

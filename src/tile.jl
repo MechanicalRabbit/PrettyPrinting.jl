@@ -172,8 +172,13 @@ tile(v::Vector) =
     list_layout(Layout[tile(x) for x in v], par=("[", "]"))
 
 tile(t::NamedTuple) =
-    list_layout(Layout[pair_layout(literal(key), tile(val), sep=" = ")
-                       for (key, val) in pairs(t)])
+    if length(t) == 1
+        ((key, val),) = pairs(t)
+        literal("(") * pair_layout(literal(key), tile(val), sep=" = ") * literal(",)")
+    else
+        list_layout(Layout[pair_layout(literal(key), tile(val), sep=" = ")
+                           for (key, val) in pairs(t)])
+    end
 
 tile(d::Dict) =
     list_layout(Layout[pair_layout(tile(key), tile(val)) for (key, val) in d],
