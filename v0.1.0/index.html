@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Home · PPrint.jl</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link href="assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>PPrint.jl</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li class="current"><a class="toctext" href>Home</a><ul class="internal"><li><a class="toctext" href="#Overview-1">Overview</a></li><li><a class="toctext" href="#Acknowledgements-1">Acknowledgements</a></li><li><a class="toctext" href="#API-Reference-1">API Reference</a></li><li><a class="toctext" href="#Test-Suite-1">Test Suite</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Home</a></li></ul><a class="edit-page" href="https://github.com/rbt-lang/PPrint.jl/blob/master/doc/src/index.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Home</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="PPrint.jl-1" href="#PPrint.jl-1">PPrint.jl</a></h1><h2><a class="nav-anchor" id="Overview-1" href="#Overview-1">Overview</a></h2><p><code>PPrint</code> is a Julia library for optimal formatting of composite data structures on a fixed-width terminal.</p><h3><a class="nav-anchor" id="Installation-1" href="#Installation-1">Installation</a></h3><p>Use the Julia package manager.</p><pre><code class="language-julia">julia&gt; using Pkg
+julia&gt; Pkg.add(&quot;PPrint&quot;)</code></pre><h3><a class="nav-anchor" id="Using-PPrint-1" href="#Using-PPrint-1">Using <code>PPrint</code></a></h3><p>First, import the module.</p><pre><code class="language-julia">using PPrint</code></pre><p>Use the function <code>pprint()</code> to print composite data structures formed of nested tuples, vectors, and dictionaries.  The data will be formatted to fit the screen size.</p><p>To demonstrate how to use <code>pprint()</code>, we create a small dataset of city departments with associated employees.</p><pre><code class="language-julia">data = [(name = &quot;POLICE&quot;,
+         employees = [(name = &quot;JEFFERY A&quot;, position = &quot;SERGEANT&quot;, salary = 101442, rate = missing),
+                      (name = &quot;NANCY A&quot;, position = &quot;POLICE OFFICER&quot;, salary = 80016, rate = missing)]),
+        (name = &quot;FIRE&quot;,
+         employees = [(name = &quot;JAMES A&quot;, position = &quot;FIRE ENGINEER-EMT&quot;, salary = 103350, rate = missing),
+                      (name = &quot;DANIEL A&quot;, position = &quot;FIRE FIGHTER-EMT&quot;, salary = 95484, rate = missing)]),
+        (name = &quot;OEMC&quot;,
+         employees = [(name = &quot;LAKENYA A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 17.68),
+                      (name = &quot;DORIS A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 19.38)])]</code></pre><p>The built-in <code>print()</code> function prints this data on a single line, making the output unreadable.</p><pre><code class="language-julia">print(data)
+#-&gt; NamedTuple{(:name, :employees),T} where T&lt;:Tuple[(name = &quot;POLICE&quot;, employees = NamedTuple{ … }[ … ]) … ]</code></pre><p>By contrast, <code>pprint()</code> formats the data to fit the screen size.</p><pre><code class="language-julia">pprint(data)
+#=&gt;
+[(name = &quot;POLICE&quot;,
+  employees = [(name = &quot;JEFFERY A&quot;,
+                position = &quot;SERGEANT&quot;,
+                salary = 101442,
+                rate = missing),
+               (name = &quot;NANCY A&quot;,
+                position = &quot;POLICE OFFICER&quot;,
+                salary = 80016,
+                rate = missing)]),
+ (name = &quot;FIRE&quot;,
+  employees = [(name = &quot;JAMES A&quot;,
+                position = &quot;FIRE ENGINEER-EMT&quot;,
+                salary = 103350,
+                rate = missing),
+               (name = &quot;DANIEL A&quot;,
+                position = &quot;FIRE FIGHTER-EMT&quot;,
+                salary = 95484,
+                rate = missing)]),
+ (name = &quot;OEMC&quot;,
+  employees = [(name = &quot;LAKENYA A&quot;,
+                position = &quot;CROSSING GUARD&quot;,
+                salary = missing,
+                rate = 17.68),
+               (name = &quot;DORIS A&quot;,
+                position = &quot;CROSSING GUARD&quot;,
+                salary = missing,
+                rate = 19.38)])]
+=#</code></pre><p>The width of the output is controlled by the <code>displaysize</code> property of the output stream.</p><pre><code class="language-julia">pprint(IOContext(stdout, :displaysize =&gt; (24, 100)), data)
+#=&gt;
+[(name = &quot;POLICE&quot;,
+  employees = [(name = &quot;JEFFERY A&quot;, position = &quot;SERGEANT&quot;, salary = 101442, rate = missing),
+               (name = &quot;NANCY A&quot;, position = &quot;POLICE OFFICER&quot;, salary = 80016, rate = missing)]),
+ (name = &quot;FIRE&quot;,
+  employees =
+      [(name = &quot;JAMES A&quot;, position = &quot;FIRE ENGINEER-EMT&quot;, salary = 103350, rate = missing),
+       (name = &quot;DANIEL A&quot;, position = &quot;FIRE FIGHTER-EMT&quot;, salary = 95484, rate = missing)]),
+ (name = &quot;OEMC&quot;,
+  employees = [(name = &quot;LAKENYA A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 17.68),
+               (name = &quot;DORIS A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 19.38)])]
+=#</code></pre><h3><a class="nav-anchor" id="Layout-expressions-1" href="#Layout-expressions-1">Layout expressions</a></h3><p><code>PPrint</code> can be extended to format any custom data structure.  To let <code>PPrint</code> format a data structure, we need to encode its possible layouts in the form of a <em>layout expression</em>.</p><p>A fixed single-line layout is created with <code>PPrint.literal()</code>.</p><pre><code class="language-julia">ll = PPrint.literal(&quot;salary&quot;)
+#-&gt; literal(&quot;salary&quot;)</code></pre><p>Layouts could be combined using horizontal (<code>*</code>) and vertical (<code>/</code>) composition operators.</p><pre><code class="language-julia">lhz = PPrint.literal(&quot;salary&quot;) * PPrint.literal(&quot; = &quot;) * PPrint.literal(&quot;101442&quot;)
+#-&gt; literal(&quot;salary&quot;) * literal(&quot; = &quot;) * literal(&quot;101442&quot;)
+
+lvt = PPrint.literal(&quot;salary&quot;) * PPrint.literal(&quot; =&quot;) /
+      PPrint.indent(4) * PPrint.literal(&quot;101442&quot;)
+#-&gt; literal(&quot;salary&quot;) * literal(&quot; =&quot;) / indent(4) * literal(&quot;101442&quot;)</code></pre><p>Here, <code>PPrint.indent(4)</code> is equivalent to <code>PPrint.literal(&quot; &quot;^4)</code>.</p><p>Function <code>PPrint.pprint()</code> serializes the layout.</p><pre><code class="language-julia">pprint(ll)
+#-&gt; salary
+
+pprint(lhz)
+#-&gt; salary = 101442
+
+pprint(lvt)
+#=&gt;
+salary =
+    101442
+=#</code></pre><p>To indicate that we can choose between several different layouts, we use the choice (<code>|</code>) operator.</p><pre><code class="language-julia">l = lhz | lvt
+#=&gt;
+literal(&quot;salary&quot;) * literal(&quot; = &quot;) * literal(&quot;101442&quot;) |
+literal(&quot;salary&quot;) * literal(&quot; =&quot;) / indent(4) * literal(&quot;101442&quot;)
+=#</code></pre><p>The pretty-printing engine can search through possible layouts to find the best fit, which is expressed as a layout expression without a choice operator.</p><pre><code class="language-julia">PPrint.best(PPrint.fit(l))
+#-&gt; literal(&quot;salary&quot;) * (literal(&quot; = &quot;) * literal(&quot;101442&quot;))</code></pre><p>In addition, <code>PPrint</code> provides functions for generating some common layouts.  A delimiter-separated pair can be generated with <code>PPrint.pair_layout()</code>.</p><pre><code class="language-julia">PPrint.pair_layout(PPrint.literal(&quot;salary&quot;),
+                   PPrint.literal(&quot;101442&quot;),
+                   sep=&quot; = &quot;)
+#=&gt;
+(literal(&quot;salary&quot;) * literal(&quot; = &quot;) |
+ literal(&quot;salary&quot;) * literal(&quot; =&quot;) / indent(4)) *
+literal(&quot;101442&quot;)
+=#</code></pre><p>A delimiter-separated list of items can be generated with <code>PPrint.list_layout()</code>.</p><pre><code class="language-julia">PPrint.list_layout([PPrint.literal(&quot;salary = 101442&quot;),
+                    PPrint.literal(&quot;rate = missing&quot;)])
+#=&gt;
+(literal(&quot;(&quot;) | literal(&quot;(&quot;) / indent(4)) *
+(literal(&quot;salary = 101442&quot;) * literal(&quot;,&quot;) / literal(&quot;rate = missing&quot;)) *
+literal(&quot;)&quot;) |
+literal(&quot;(&quot;) *
+(literal(&quot;salary = 101442&quot;) * literal(&quot;, &quot;) * literal(&quot;rate = missing&quot;)) *
+literal(&quot;)&quot;)
+=#</code></pre><h3><a class="nav-anchor" id="Extending-PPrint-1" href="#Extending-PPrint-1">Extending <code>PPrint</code></a></h3><p>We can make <code>pprint()</code> format objects of user-defined types.  For this purpose, we must implement the function <code>PPrint.tile()</code>, which should map an object to its layout expression.</p><p>For example, consider a simple tree structure.</p><pre><code class="language-julia">struct Node
+    name::Symbol
+    arms::Vector{Node}
+end
+
+Node(name) = Node(name, [])
+
+tree =
+    Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage),
+                                        Node(:anchorite)]),
+                         Node(:anchovy),
+                         Node(:antic, [Node(:anticipation)])]),
+              Node(:arc, [Node(:arch, [Node(:archduke),
+                                       Node(:archer)])]),
+              Node(:awl)])
+#-&gt; Node(:a, Main.index.md.Node[ … ])</code></pre><p>To make <code>pprint()</code> format this tree, we must implement the function <code>PPrint.tile(::Node)</code>.  A suitable layout expression for this tree could be generated with <code>PPrint.list_layout()</code>.</p><pre><code class="language-julia">function PPrint.tile(tree::Node)
+    if isempty(tree.arms)
+        return PPrint.literal(&quot;Node($(repr(tree.name)))&quot;)
+    end
+    arm_lts = [PPrint.tile(arm) for arm in tree.arms]
+    return PPrint.list_layout(arm_lts, prefix=&quot;Node($(repr(tree.name)), &quot;, par=(&quot;[&quot;, &quot;])&quot;))
+end</code></pre><p>Now <code>pprint()</code> renders a nicely formatted representation of the tree.</p><pre><code class="language-julia">pprint(stdout, tree)
+#=&gt;
+Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
+                     Node(:anchovy),
+                     Node(:antic, [Node(:anticipation)])]),
+          Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
+          Node(:awl)])
+=#</code></pre><h2><a class="nav-anchor" id="Acknowledgements-1" href="#Acknowledgements-1">Acknowledgements</a></h2><p>The algorithm for finding the optimal layout is based upon <a href="https://ai.google/research/pubs/pub44667">Phillip Yelland, A New Approach to Optimal Code Formatting, 2016</a>.</p><h2><a class="nav-anchor" id="API-Reference-1" href="#API-Reference-1">API Reference</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="PPrint.pprint" href="#PPrint.pprint"><code>PPrint.pprint</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">PPrint.pprint([io::IO], data)</code></pre><p>Displays the data so that it fits the width of the output screen.</p></div></div><a class="source-link" target="_blank" href="https://github.com/rbt-lang/PPrint.jl/blob/322bd286c2f1f7f21d9a2b7abc0fbf0ae2255b51/src/PPrint.jl#L25-L29">source</a></section><h2><a class="nav-anchor" id="Test-Suite-1" href="#Test-Suite-1">Test Suite</a></h2><p>The following function overrides the width of the output terminal.</p><pre><code class="language-julia">resize(w) = IOContext(stdout, :displaysize =&gt; (24, w))</code></pre><h3><a class="nav-anchor" id="Formatting-built-in-data-structures-1" href="#Formatting-built-in-data-structures-1">Formatting built-in data structures</a></h3><p>The function <code>pprint()</code> supports many built-in data structures.</p><p>In particular, <code>pprint()</code> can format <code>Pair</code> objects.</p><pre><code class="language-julia">p = :deinstitutionalization =&gt; :counterrevolutionaries
+
+pprint(p)
+#-&gt; :deinstitutionalization =&gt; :counterrevolutionaries
+
+pprint(resize(40), p)
+#=&gt;
+:deinstitutionalization =&gt;
+    :counterrevolutionaries
+=#</code></pre><p><code>pprint(::Pair)</code> can handle composite keys and values.</p><pre><code class="language-julia">p = :deinstitutionalization =&gt; [:notation, :nation, :initialization, :intuition]
+
+pprint(p)
+#-&gt; :deinstitutionalization =&gt; [:notation, :nation, :initialization, :intuition]
+
+pprint(resize(60), p)
+#=&gt;
+:deinstitutionalization =&gt;
+    [:notation, :nation, :initialization, :intuition]
+=#
+
+pprint(resize(50), p)
+#=&gt;
+:deinstitutionalization =&gt; [:notation,
+                            :nation,
+                            :initialization,
+                            :intuition]
+=#
+
+pprint(resize(40), p)
+#=&gt;
+:deinstitutionalization =&gt;
+    [:notation,
+     :nation,
+     :initialization,
+     :intuition]
+=#
+
+p = [:orientation, :interculture, :translucent] =&gt; :counterrevolutionaries
+
+pprint(p)
+#-&gt; [:orientation, :interculture, :translucent] =&gt; :counterrevolutionaries
+
+pprint(resize(60), p)
+#=&gt;
+[:orientation, :interculture, :translucent] =&gt;
+    :counterrevolutionaries
+=#
+
+pprint(resize(40), p)
+#=&gt;
+[:orientation,
+ :interculture,
+ :translucent] =&gt;
+    :counterrevolutionaries
+=#</code></pre><p><code>pprint()</code> can also format tuples and vectors.</p><pre><code class="language-julia">pprint(())
+#-&gt; ()
+
+pprint([])
+#-&gt; []
+
+pprint((:deinstitutionalization,))
+#-&gt; (:deinstitutionalization,)
+
+pprint([:deinstitutionalization])
+#-&gt; [:deinstitutionalization]
+
+t = (:notation, :nation, :initialization, :intuition)
+
+pprint(t)
+#-&gt; (:notation, :nation, :initialization, :intuition)
+
+pprint(collect(t))
+#-&gt; [:notation, :nation, :initialization, :intuition]
+
+pprint(resize(40), t)
+#=&gt;
+(:notation,
+ :nation,
+ :initialization,
+ :intuition)
+=#
+
+pprint(resize(40), collect(t))
+#=&gt;
+[:notation,
+ :nation,
+ :initialization,
+ :intuition]
+=#</code></pre><p>Finally, <code>pprint()</code> is implemented for dictionaries and named tuples.</p><pre><code class="language-julia">pprint(Dict())
+#-&gt; Dict()
+
+pprint((deinstitutionalization = :counterrevolutionaries,))
+#-&gt; (deinstitutionalization = :counterrevolutionaries,)
+
+pprint(Dict(:deinstitutionalization =&gt; :counterrevolutionaries))
+#-&gt; Dict(:deinstitutionalization =&gt; :counterrevolutionaries)
+
+nt = (deinstitutionalization = [:notation, :nation, :initialization, :intuition],
+      counterrevolutionaries = [:orientation, :interculture, :translucent])
+
+pprint(nt)
+#=&gt;
+(deinstitutionalization = [:notation, :nation, :initialization, :intuition],
+ counterrevolutionaries = [:orientation, :interculture, :translucent])
+=#</code></pre><p>The following test has to be skipped because the order of entries in a dictionary is unstable.</p><pre><code class="language-julia">pprint(Dict(pairs(nt)))
+#=&gt;
+Dict(:deinstitutionalization =&gt;
+         [:notation, :nation, :initialization, :intuition],
+     :counterrevolutionaries =&gt; [:orientation, :interculture, :translucent])
+=#</code></pre><h3><a class="nav-anchor" id="Using-pair_layout()-1" href="#Using-pair_layout()-1">Using <code>pair_layout()</code></a></h3><p>Function <code>pair_layout()</code> generates a layout expression for <code>Pair</code>-like objects.</p><pre><code class="language-julia">kl = PPrint.literal(:deinstitutionalization)
+vl = PPrint.literal(:counterrevolutionaries)
+
+pl = PPrint.pair_layout(kl, vl)
+
+pprint(pl)
+#-&gt; deinstitutionalization =&gt; counterrevolutionaries
+
+pprint(resize(40), pl)
+#=&gt;
+deinstitutionalization =&gt;
+    counterrevolutionaries
+=#</code></pre><p>Use parameter <code>sep</code> to change the separator.</p><pre><code class="language-julia">pprint(PPrint.pair_layout(kl, vl, sep=&quot; -&gt; &quot;))
+#-&gt; deinstitutionalization -&gt; counterrevolutionaries</code></pre><p>Parameter <code>sep_brk</code> controls the position of the separator with respect to the line break.</p><pre><code class="language-julia">pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:start))
+#=&gt;
+deinstitutionalization
+    =&gt; counterrevolutionaries
+=#
+
+pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:end))
+#=&gt;
+deinstitutionalization =&gt;
+    counterrevolutionaries
+=#
+
+pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:both))
+#=&gt;
+deinstitutionalization =&gt;
+    =&gt; counterrevolutionaries
+=#
+
+pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:none))
+#=&gt;
+deinstitutionalization
+    counterrevolutionaries
+=#</code></pre><p>Parameter <code>tab</code> specifies the indentation level.</p><pre><code class="language-julia">pprint(resize(40), PPrint.pair_layout(kl, vl, tab=0))
+#=&gt;
+deinstitutionalization =&gt;
+counterrevolutionaries
+=#</code></pre><h3><a class="nav-anchor" id="Using-list_layout()-1" href="#Using-list_layout()-1">Using <code>list_layout()</code></a></h3><p>Function <code>list_layout()</code> generates a layout expression for list-like objects.</p><pre><code class="language-julia">ls = PPrint.literal.([:notation, :nation, :initialization, :intuition])
+
+ll = PPrint.list_layout(ls)
+
+pprint(ll)
+#-&gt; (notation, nation, initialization, intuition)
+
+pprint(resize(40), ll)
+#=&gt;
+(notation,
+ nation,
+ initialization,
+ intuition)
+=#</code></pre><p>Use parameter <code>prefix</code> to add a prefix to the list.  This is useful for generating functional notation.</p><pre><code class="language-julia">pprint(resize(30), PPrint.list_layout(ls, prefix=:deinstitutionalization))
+#=&gt;
+deinstitutionalization(
+    notation,
+    nation,
+    initialization,
+    intuition)
+=#</code></pre><p>Parameter <code>par</code> specifies the left and the right parentheses.</p><pre><code class="language-julia">pprint(PPrint.list_layout(ls, par=(&quot;[&quot;,&quot;]&quot;)))
+#-&gt; [notation, nation, initialization, intuition]</code></pre><p>Parameter <code>sep</code> to specifies the separator.</p><pre><code class="language-julia">pprint(PPrint.list_layout(ls, sep=&quot; * &quot;))
+#-&gt; (notation * nation * initialization * intuition)</code></pre><p>Parameter <code>sep_brk</code> controls the position of separators with respect to line breaks.</p><pre><code class="language-julia">pprint(resize(40), PPrint.list_layout(ls, sep_brk=:start))
+#=&gt;
+(notation
+ , nation
+ , initialization
+ , intuition)
+=#
+
+pprint(resize(40), PPrint.list_layout(ls, sep_brk=:end))
+#=&gt;
+(notation,
+ nation,
+ initialization,
+ intuition)
+=#
+
+pprint(resize(40), PPrint.list_layout(ls, sep_brk=:both))
+#=&gt;
+(notation,
+ , nation,
+ , initialization,
+ , intuition)
+=#
+
+pprint(resize(40), PPrint.list_layout(ls, sep_brk=:none))
+#=&gt;
+(notation
+ nation
+ initialization
+ intuition)
+=#</code></pre><p>Parameter <code>tab</code> specifies the indentation level.</p><pre><code class="language-julia">pprint(resize(30), PPrint.list_layout(ls, prefix=:deinstitutionalization, tab=0))
+#=&gt;
+deinstitutionalization(
+notation,
+nation,
+initialization,
+intuition)
+=#</code></pre><footer><hr/></footer></article></body></html>
