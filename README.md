@@ -76,7 +76,7 @@ julia> pprint(data)
 ```
 
 PrettyPrinting knows how to format tuples, vectors, and dictionaries.  Other
-data types should implement `PrettyPrinting.tile()` as shown in the
+data types should implement the function `tile()` as described in the
 [**documentation**][doc-dev-url].
 
 
