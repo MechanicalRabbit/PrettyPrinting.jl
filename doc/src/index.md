@@ -27,15 +27,12 @@ Use the function `pprint()` to print composite data structures formed of nested
 tuples, vectors, and dictionaries.  The data will be formatted to fit the
 screen size.
 
-To demonstrate how to use `pprint()`, we create a small dataset of city
+To demonstrate how to use `pprint()`, we consider a small dataset of city
 departments with associated employees.
 
     data = [(name = "POLICE",
              employees = [(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing),
                           (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)]),
-            (name = "FIRE",
-             employees = [(name = "JAMES A", position = "FIRE ENGINEER-EMT", salary = 103350, rate = missing),
-                          (name = "DANIEL A", position = "FIRE FIGHTER-EMT", salary = 95484, rate = missing)]),
             (name = "OEMC",
              employees = [(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68),
                           (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])]
@@ -59,15 +56,6 @@ By contrast, `pprint()` formats the data to fit the screen size.
                     position = "POLICE OFFICER",
                     salary = 80016,
                     rate = missing)]),
-     (name = "FIRE",
-      employees = [(name = "JAMES A",
-                    position = "FIRE ENGINEER-EMT",
-                    salary = 103350,
-                    rate = missing),
-                   (name = "DANIEL A",
-                    position = "FIRE FIGHTER-EMT",
-                    salary = 95484,
-                    rate = missing)]),
      (name = "OEMC",
       employees = [(name = "LAKENYA A",
                     position = "CROSSING GUARD",
@@ -87,10 +75,6 @@ output stream.
     [(name = "POLICE",
       employees = [(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing),
                    (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)]),
-     (name = "FIRE",
-      employees =
-          [(name = "JAMES A", position = "FIRE ENGINEER-EMT", salary = 103350, rate = missing),
-           (name = "DANIEL A", position = "FIRE FIGHTER-EMT", salary = 95484, rate = missing)]),
      (name = "OEMC",
       employees = [(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68),
                    (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])]

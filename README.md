@@ -32,15 +32,11 @@ Use function `pprint()` to display complex data structures.  For example:
 julia> data = [(name = "POLICE",
                 employees = [(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing),
                              (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)]),
-               (name = "FIRE",
-                employees = [(name = "JAMES A", position = "FIRE ENGINEER-EMT", salary = 103350, rate = missing),
-                             (name = "DANIEL A", position = "FIRE FIGHTER-EMT", salary = 95484, rate = missing)]),
                (name = "OEMC",
                 employees = [(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68),
                              (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])]
-3-element Array{NamedTuple{(:name, :employees),T} where T<:Tuple,1}:
+2-element Array{NamedTuple{(:name, :employees),T} where T<:Tuple,1}:
  (name = "POLICE", employees = NamedTuple{(:name, :position, :salary, :rate),Tuple{String,String,Int64,Missing}}[(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing), (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)])
- (name = "FIRE", employees = NamedTuple{(:name, :position, :salary, :rate),Tuple{String,String,Int64,Missing}}[(name = "JAMES A", position = "FIRE ENGINEER-EMT", salary = 103350, rate = missing), (name = "DANIEL A", position = "FIRE FIGHTER-EMT", salary = 95484, rate = missing)])
  (name = "OEMC", employees = NamedTuple{(:name, :position, :salary, :rate),Tuple{String,String,Missing,Float64}}[(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68), (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])
 
 julia> pprint(data)
@@ -52,15 +48,6 @@ julia> pprint(data)
                (name = "NANCY A",
                 position = "POLICE OFFICER",
                 salary = 80016,
-                rate = missing)]),
- (name = "FIRE",
-  employees = [(name = "JAMES A",
-                position = "FIRE ENGINEER-EMT",
-                salary = 103350,
-                rate = missing),
-               (name = "DANIEL A",
-                position = "FIRE FIGHTER-EMT",
-                salary = 95484,
                 rate = missing)]),
  (name = "OEMC",
   employees = [(name = "LAKENYA A",
