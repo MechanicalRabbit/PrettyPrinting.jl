@@ -1,9 +1,9 @@
-# PPrint.jl
+# PrettyPrinting.jl
 
 
 ## Overview
 
-`PPrint` is a Julia library for optimal formatting of composite data structures
+`PrettyPrinting` is a Julia library for optimal formatting of composite data structures
 on a fixed-width terminal.
 
 
@@ -13,15 +13,15 @@ Use the Julia package manager.
 
 ```julia
 julia> using Pkg
-julia> Pkg.add("PPrint")
+julia> Pkg.add("PrettyPrinting")
 ```
 
 
-### Using `PPrint`
+### Using `PrettyPrinting`
 
 First, import the module.
 
-    using PPrint
+    using PrettyPrinting
 
 Use the function `pprint()` to print composite data structures formed of nested
 tuples, vectors, and dictionaries.  The data will be formatted to fit the
@@ -99,28 +99,37 @@ output stream.
 
 ### Layout expressions
 
-`PPrint` can be extended to format any custom data structure.  To let `PPrint`
-format a data structure, we need to encode its possible layouts in the form of
-a *layout expression*.
+`PrettyPrinting` can be extended to format any custom data structure.  To let
+`PrettyPrinting` format a data structure, we need to encode its possible
+layouts in the form of a *layout expression*.
 
-A fixed single-line layout is created with `PPrint.literal()`.
+We will use the following definitions.
 
-    ll = PPrint.literal("salary")
+    using PrettyPrinting:
+        best_fit,
+        indent,
+        list_layout,
+        literal,
+        pair_layout
+
+A fixed single-line layout is created with `literal()`.
+
+    ll = literal("salary")
     #-> literal("salary")
 
 Layouts could be combined using horizontal (`*`) and vertical (`/`) composition
 operators.
 
-    lhz = PPrint.literal("salary") * PPrint.literal(" = ") * PPrint.literal("101442")
+    lhz = literal("salary") * literal(" = ") * literal("101442")
     #-> literal("salary") * literal(" = ") * literal("101442")
 
-    lvt = PPrint.literal("salary") * PPrint.literal(" =") /
-          PPrint.indent(4) * PPrint.literal("101442")
+    lvt = literal("salary") * literal(" =") /
+          indent(4) * literal("101442")
     #-> literal("salary") * literal(" =") / indent(4) * literal("101442")
 
-Here, `PPrint.indent(4)` is equivalent to `PPrint.literal(" "^4)`.
+Here, `indent(4)` is equivalent to `literal(" "^4)`.
 
-Function `PPrint.pprint()` serializes the layout.
+Function `pprint()` serializes the layout.
 
     pprint(ll)
     #-> salary
@@ -146,26 +155,22 @@ choice (`|`) operator.
 The pretty-printing engine can search through possible layouts to find the best
 fit, which is expressed as a layout expression without a choice operator.
 
-    PPrint.best(PPrint.fit(l))
+    best_fit(l)
     #-> literal("salary") * (literal(" = ") * literal("101442"))
 
-In addition, `PPrint` provides functions for generating some common layouts.  A
-delimiter-separated pair can be generated with `PPrint.pair_layout()`.
+In addition, `PrettyPrinting` can generate some common layouts.  A
+delimiter-separated pair can be generated with `pair_layout()`.
 
-    PPrint.pair_layout(PPrint.literal("salary"),
-                       PPrint.literal("101442"),
-                       sep=" = ")
+    pair_layout(literal("salary"), literal("101442"), sep=" = ")
     #=>
     (literal("salary") * literal(" = ") |
      literal("salary") * literal(" =") / indent(4)) *
     literal("101442")
     =#
 
-A delimiter-separated list of items can be generated with
-`PPrint.list_layout()`.
+A delimiter-separated list of items can be generated with `list_layout()`.
 
-    PPrint.list_layout([PPrint.literal("salary = 101442"),
-                        PPrint.literal("rate = missing")])
+    list_layout([literal("salary = 101442"), literal("rate = missing")])
     #=>
     (literal("(") | literal("(") / indent(4)) *
     (literal("salary = 101442") * literal(",") / literal("rate = missing")) *
@@ -176,11 +181,11 @@ A delimiter-separated list of items can be generated with
     =#
 
 
-### Extending `PPrint`
+### Extending `PrettyPrinting`
 
 We can make `pprint()` format objects of user-defined types.  For this purpose,
-we must implement the function `PPrint.tile()`, which should map an object to
-its layout expression.
+we must implement the function `tile()`, which should map an object to its
+layout expression.
 
 For example, consider a simple tree structure.
 
@@ -202,15 +207,18 @@ For example, consider a simple tree structure.
     #-> Node(:a, Main.index.md.Node[ … ])
 
 To make `pprint()` format this tree, we must implement the function
-`PPrint.tile(::Node)`.  A suitable layout expression for this tree could be
-generated with `PPrint.list_layout()`.
+`tile(::Node)`.  A suitable layout expression for this tree could be generated
+with `list_layout()`.
 
-    function PPrint.tile(tree::Node)
+    import PrettyPrinting:
+        tile
+
+    function tile(tree::Node)
         if isempty(tree.arms)
-            return PPrint.literal("Node($(repr(tree.name)))")
+            return literal("Node($(repr(tree.name)))")
         end
-        arm_lts = [PPrint.tile(arm) for arm in tree.arms]
-        return PPrint.list_layout(arm_lts, prefix="Node($(repr(tree.name)), ", par=("[", "])"))
+        return list_layout(tile.(tree.arms),
+                           prefix="Node($(repr(tree.name)), ", par=("[", "])"))
     end
 
 Now `pprint()` renders a nicely formatted representation of the tree.
@@ -234,7 +242,7 @@ The algorithm for finding the optimal layout is based upon
 ## API Reference
 
 ```@docs
-PPrint.pprint
+PrettyPrinting.pprint
 ```
 
 
@@ -386,10 +394,10 @@ Dict(:deinstitutionalization =>
 
 Function `pair_layout()` generates a layout expression for `Pair`-like objects.
 
-    kl = PPrint.literal(:deinstitutionalization)
-    vl = PPrint.literal(:counterrevolutionaries)
+    kl = literal(:deinstitutionalization)
+    vl = literal(:counterrevolutionaries)
 
-    pl = PPrint.pair_layout(kl, vl)
+    pl = pair_layout(kl, vl)
 
     pprint(pl)
     #-> deinstitutionalization => counterrevolutionaries
@@ -402,31 +410,31 @@ Function `pair_layout()` generates a layout expression for `Pair`-like objects.
 
 Use parameter `sep` to change the separator.
 
-    pprint(PPrint.pair_layout(kl, vl, sep=" -> "))
+    pprint(pair_layout(kl, vl, sep=" -> "))
     #-> deinstitutionalization -> counterrevolutionaries
 
 Parameter `sep_brk` controls the position of the separator with respect to the
 line break.
 
-    pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:start))
+    pprint(resize(40), pair_layout(kl, vl, sep_brk=:start))
     #=>
     deinstitutionalization
         => counterrevolutionaries
     =#
 
-    pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:end))
+    pprint(resize(40), pair_layout(kl, vl, sep_brk=:end))
     #=>
     deinstitutionalization =>
         counterrevolutionaries
     =#
 
-    pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:both))
+    pprint(resize(40), pair_layout(kl, vl, sep_brk=:both))
     #=>
     deinstitutionalization =>
         => counterrevolutionaries
     =#
 
-    pprint(resize(40), PPrint.pair_layout(kl, vl, sep_brk=:none))
+    pprint(resize(40), pair_layout(kl, vl, sep_brk=:none))
     #=>
     deinstitutionalization
         counterrevolutionaries
@@ -434,7 +442,7 @@ line break.
 
 Parameter `tab` specifies the indentation level.
 
-    pprint(resize(40), PPrint.pair_layout(kl, vl, tab=0))
+    pprint(resize(40), pair_layout(kl, vl, tab=0))
     #=>
     deinstitutionalization =>
     counterrevolutionaries
@@ -445,9 +453,9 @@ Parameter `tab` specifies the indentation level.
 
 Function `list_layout()` generates a layout expression for list-like objects.
 
-    ls = PPrint.literal.([:notation, :nation, :initialization, :intuition])
+    ls = literal.([:notation, :nation, :initialization, :intuition])
 
-    ll = PPrint.list_layout(ls)
+    ll = list_layout(ls)
 
     pprint(ll)
     #-> (notation, nation, initialization, intuition)
@@ -463,7 +471,7 @@ Function `list_layout()` generates a layout expression for list-like objects.
 Use parameter `prefix` to add a prefix to the list.  This is useful for
 generating functional notation.
 
-    pprint(resize(30), PPrint.list_layout(ls, prefix=:deinstitutionalization))
+    pprint(resize(30), list_layout(ls, prefix=:deinstitutionalization))
     #=>
     deinstitutionalization(
         notation,
@@ -474,18 +482,18 @@ generating functional notation.
 
 Parameter `par` specifies the left and the right parentheses.
 
-    pprint(PPrint.list_layout(ls, par=("[","]")))
+    pprint(list_layout(ls, par=("[","]")))
     #-> [notation, nation, initialization, intuition]
 
 Parameter `sep` to specifies the separator.
 
-    pprint(PPrint.list_layout(ls, sep=" * "))
+    pprint(list_layout(ls, sep=" * "))
     #-> (notation * nation * initialization * intuition)
 
 Parameter `sep_brk` controls the position of separators with respect to
 line breaks.
 
-    pprint(resize(40), PPrint.list_layout(ls, sep_brk=:start))
+    pprint(resize(40), list_layout(ls, sep_brk=:start))
     #=>
     (notation
      , nation
@@ -493,7 +501,7 @@ line breaks.
      , intuition)
     =#
 
-    pprint(resize(40), PPrint.list_layout(ls, sep_brk=:end))
+    pprint(resize(40), list_layout(ls, sep_brk=:end))
     #=>
     (notation,
      nation,
@@ -501,7 +509,7 @@ line breaks.
      intuition)
     =#
 
-    pprint(resize(40), PPrint.list_layout(ls, sep_brk=:both))
+    pprint(resize(40), list_layout(ls, sep_brk=:both))
     #=>
     (notation,
      , nation,
@@ -509,7 +517,7 @@ line breaks.
      , intuition)
     =#
 
-    pprint(resize(40), PPrint.list_layout(ls, sep_brk=:none))
+    pprint(resize(40), list_layout(ls, sep_brk=:none))
     #=>
     (notation
      nation
@@ -519,7 +527,7 @@ line breaks.
 
 Parameter `tab` specifies the indentation level.
 
-    pprint(resize(30), PPrint.list_layout(ls, prefix=:deinstitutionalization, tab=0))
+    pprint(resize(30), list_layout(ls, prefix=:deinstitutionalization, tab=0))
     #=>
     deinstitutionalization(
     notation,
@@ -527,3 +535,4 @@ Parameter `tab` specifies the indentation level.
     initialization,
     intuition)
     =#
+

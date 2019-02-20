@@ -77,6 +77,8 @@ mutable struct Formatter
         end
 end
 
+best_fit(args...) = best(fit(args...))
+
 fit(lt::Layout) = fit(Formatter(), lt)
 
 fit(io::IO, lt::Layout) = fit(Formatter(io), lt)

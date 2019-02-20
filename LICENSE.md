@@ -1,4 +1,4 @@
-The PPrint.jl package is licensed under the MIT "Expat" License:
+The PrettyPrinting.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2018: Prometheus Research, LLC.
 >

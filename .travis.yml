@@ -24,7 +24,7 @@ env:
 
 after_success:
 # push coverage results
-- julia -e 'using Pkg; cd(Pkg.dir("PPrint")); include("test/coverage.jl")'
+- julia -e 'using Pkg; cd(Pkg.dir("PrettyPrinting")); include("test/coverage.jl")'
 
 jobs:
   include:
@@ -33,5 +33,5 @@ jobs:
     os: linux
     julia: 1.0
     script:
-    - julia -e 'using Pkg; cd(Pkg.dir("PPrint")); include("doc/make.jl")'
+    - julia -e 'using Pkg; cd(Pkg.dir("PrettyPrinting")); include("doc/make.jl")'
     after_success: skip

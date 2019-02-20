@@ -1,7 +1,7 @@
-# PPrint.jl
+# PrettyPrinting.jl
 
-*PPrint is a Julia library for optimal formatting of composite data structures
-on a fixed-width terminal.*
+*PrettyPrinting is a Julia library for optimal formatting of composite data
+structures on a fixed-width terminal.*
 
 [![Linux/OSX Build Status][travis-img]][travis-url]
 [![Windows Build Status][appveyor-img]][appveyor-url]
@@ -17,13 +17,13 @@ Install the package using the Julia package manager:
 
 ```julia
 julia> using Pkg
-julia> Pkg.add("PPrint")
+julia> Pkg.add("PrettyPrinting")
 ```
 
 To start using the package, import it:
 
 ```julia
-julia> using PPrint
+julia> using PrettyPrinting
 ```
 
 Use function `pprint()` to display complex data structures.  For example:
@@ -75,8 +75,8 @@ julia> pprint(data)
                 rate = 19.38)])]
 ```
 
-PPrint knows how to format tuples, vectors, and dictionaries.  Other data types
-should implement `PPrint.tile()` as shown in the
+PrettyPrinting knows how to format tuples, vectors, and dictionaries.  Other
+data types should implement `PrettyPrinting.tile()` as shown in the
 [**documentation**][doc-dev-url].
 
 
@@ -86,16 +86,16 @@ The algorithm for finding the optimal layout is based upon
 [Phillip Yelland, A New Approach to Optimal Code Formatting, 2016][rfmt-paper].
 
 
-[travis-img]: https://travis-ci.org/rbt-lang/PPrint.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/rbt-lang/PPrint.jl
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/rbt-lang/PPrint.jl?branch=master&svg=true
-[appveyor-url]: https://ci.appveyor.com/project/rbt-lang/pprint-jl/branch/master
-[codecov-img]: https://codecov.io/gh/rbt-lang/PPrint.jl/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/rbt-lang/PPrint.jl
-[issues-img]: https://img.shields.io/github/issues/rbt-lang/PPrint.jl.svg
-[issues-url]: https://github.com/rbt-lang/PPrint.jl/issues
+[travis-img]: https://travis-ci.org/rbt-lang/PrettyPrinting.jl.svg?branch=master
+[travis-url]: https://travis-ci.org/rbt-lang/PrettyPrinting.jl
+[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/rbt-lang/PrettyPrinting.jl?branch=master&svg=true
+[appveyor-url]: https://ci.appveyor.com/project/rbt-lang/prettyprinting-jl/branch/master
+[codecov-img]: https://codecov.io/gh/rbt-lang/PrettyPrinting.jl/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/rbt-lang/PrettyPrinting.jl
+[issues-img]: https://img.shields.io/github/issues/rbt-lang/PrettyPrinting.jl.svg
+[issues-url]: https://github.com/rbt-lang/PrettyPrinting.jl/issues
 [doc-dev-img]: https://img.shields.io/badge/doc-dev-blue.svg
-[doc-dev-url]: https://rbt-lang.github.io/PPrint.jl/dev/
+[doc-dev-url]: https://rbt-lang.github.io/PrettyPrinting.jl/dev/
 [license-img]: https://img.shields.io/badge/license-MIT-blue.svg
-[license-url]: https://raw.githubusercontent.com/rbt-lang/PPrint.jl/master/LICENSE.md
+[license-url]: https://raw.githubusercontent.com/rbt-lang/PrettyPrinting.jl/master/LICENSE.md
 [rfmt-paper]: https://ai.google/research/pubs/pub44667

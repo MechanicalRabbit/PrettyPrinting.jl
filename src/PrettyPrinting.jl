@@ -3,7 +3,7 @@
 # (see <https://research.google.com/pubs/pub44667.html>)
 #
 
-module PPrint
+module PrettyPrinting
 
 export
     pprint
@@ -23,7 +23,7 @@ include("tile.jl")
 include("fit.jl")
 
 """
-    PPrint.pprint([io::IO], data)
+    pprint([io::IO], data)
 
 Displays the data so that it fits the width of the output screen.
 """
@@ -34,7 +34,7 @@ pprint(io::IO, data) =
     pprint(io, tile(data))
 
 function pprint(io::IO, lt::Layout)
-    render(io, best(fit(io, lt)))
+    render(io, best_fit(io, lt))
     nothing
 end
 
