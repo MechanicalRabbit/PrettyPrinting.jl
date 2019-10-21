@@ -6,7 +6,8 @@
 module PrettyPrinting
 
 export
-    pprint
+    pprint,
+    pprintln
 
 import Base:
     IndexStyle,
@@ -37,5 +38,8 @@ function pprint(io::IO, lt::Layout)
     render(io, best_fit(io, lt))
     nothing
 end
+
+pprintln(io, s) = (pprint(io, s); println(io))
+pprintln(s) = pprintln(stdout,s)
 
 end
