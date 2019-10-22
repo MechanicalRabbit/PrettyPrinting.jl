@@ -5,8 +5,12 @@ version = "0.1.0"
 
 [deps]
 
+[compat]
+julia = "1"
+
 [extras]
-Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+Coverage = "a2441757-f6aa-5fb2-8edb-039e3f45d037"
+NarrativeTest = "9563631e-acd4-5dd8-bebb-4cf36518960d"
 
 [targets]
-test = ["Pkg"]
+test = ["Coverage", "NarrativeTest"]
