@@ -34,6 +34,27 @@ julia&gt; Pkg.add(&quot;PrettyPrinting&quot;)</code></pre><h3><a class="nav-anch
  (name = &quot;OEMC&quot;,
   employees = [(name = &quot;LAKENYA A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 17.68),
                (name = &quot;DORIS A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 19.38)])]
+=#</code></pre><p>If you want to add a newline after the output, use the function <code>pprintln()</code>.</p><pre><code class="language-julia">pprintln(data[1])
+pprintln(data[2])
+#=&gt;
+(name = &quot;POLICE&quot;,
+ employees = [(name = &quot;JEFFERY A&quot;,
+               position = &quot;SERGEANT&quot;,
+               salary = 101442,
+               rate = missing),
+              (name = &quot;NANCY A&quot;,
+               position = &quot;POLICE OFFICER&quot;,
+               salary = 80016,
+               rate = missing)])
+(name = &quot;OEMC&quot;,
+ employees = [(name = &quot;LAKENYA A&quot;,
+               position = &quot;CROSSING GUARD&quot;,
+               salary = missing,
+               rate = 17.68),
+              (name = &quot;DORIS A&quot;,
+               position = &quot;CROSSING GUARD&quot;,
+               salary = missing,
+               rate = 19.38)])
 =#</code></pre><h3><a class="nav-anchor" id="Layout-expressions-1" href="#Layout-expressions-1">Layout expressions</a></h3><p><code>PrettyPrinting</code> can be extended to format any custom data structure.  To let <code>PrettyPrinting</code> format a data structure, we need to encode its possible layouts in the form of a <em>layout expression</em>.</p><p>We will use the following definitions.</p><pre><code class="language-julia">using PrettyPrinting:
     best_fit,
     indent,
@@ -104,7 +125,7 @@ Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
                      Node(:antic, [Node(:anticipation)])]),
           Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
           Node(:awl)])
-=#</code></pre><h2><a class="nav-anchor" id="Acknowledgements-1" href="#Acknowledgements-1">Acknowledgements</a></h2><p>The algorithm for finding the optimal layout is based upon <a href="https://ai.google/research/pubs/pub44667">Phillip Yelland, A New Approach to Optimal Code Formatting, 2016</a>.</p><h2><a class="nav-anchor" id="API-Reference-1" href="#API-Reference-1">API Reference</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="PrettyPrinting.pprint" href="#PrettyPrinting.pprint"><code>PrettyPrinting.pprint</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">pprint([io::IO], data)</code></pre><p>Displays the data so that it fits the width of the output screen.</p></div></div><a class="source-link" target="_blank" href="https://github.com/rbt-lang/PrettyPrinting.jl/blob/0314fac69f6bf3aa7af436005a08678a16078a54/src/PrettyPrinting.jl#L25-L29">source</a></section><h2><a class="nav-anchor" id="Test-Suite-1" href="#Test-Suite-1">Test Suite</a></h2><p>The following function overrides the width of the output terminal.</p><pre><code class="language-julia">resize(w) = IOContext(stdout, :displaysize =&gt; (24, w))</code></pre><h3><a class="nav-anchor" id="Formatting-built-in-data-structures-1" href="#Formatting-built-in-data-structures-1">Formatting built-in data structures</a></h3><p>The function <code>pprint()</code> supports many built-in data structures.</p><p>In particular, <code>pprint()</code> can format <code>Pair</code> objects.</p><pre><code class="language-julia">p = :deinstitutionalization =&gt; :counterrevolutionaries
+=#</code></pre><h2><a class="nav-anchor" id="Acknowledgements-1" href="#Acknowledgements-1">Acknowledgements</a></h2><p>The algorithm for finding the optimal layout is based upon <a href="https://ai.google/research/pubs/pub44667">Phillip Yelland, A New Approach to Optimal Code Formatting, 2016</a>.</p><h2><a class="nav-anchor" id="API-Reference-1" href="#API-Reference-1">API Reference</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="PrettyPrinting.pprint" href="#PrettyPrinting.pprint"><code>PrettyPrinting.pprint</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">pprint([io::IO], data)</code></pre><p>Displays the data so that it fits the width of the output screen.</p></div></div><a class="source-link" target="_blank" href="https://github.com/rbt-lang/PrettyPrinting.jl/blob/b761cc9b1f0014c90d00d0e841a0ae5558f5a4f9/src/PrettyPrinting.jl#L26-L30">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="PrettyPrinting.pprintln" href="#PrettyPrinting.pprintln"><code>PrettyPrinting.pprintln</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">pprintln([io::IO], data)</code></pre><p>Displays the data using <code>pprint</code> and adds a newline.</p></div></div><a class="source-link" target="_blank" href="https://github.com/rbt-lang/PrettyPrinting.jl/blob/b761cc9b1f0014c90d00d0e841a0ae5558f5a4f9/src/PrettyPrinting.jl#L42-L46">source</a></section><h2><a class="nav-anchor" id="Test-Suite-1" href="#Test-Suite-1">Test Suite</a></h2><p>The following function overrides the width of the output terminal.</p><pre><code class="language-julia">resize(w) = IOContext(stdout, :displaysize =&gt; (24, w))</code></pre><h3><a class="nav-anchor" id="Formatting-built-in-data-structures-1" href="#Formatting-built-in-data-structures-1">Formatting built-in data structures</a></h3><p>The function <code>pprint()</code> supports many built-in data structures.</p><p>In particular, <code>pprint()</code> can format <code>Pair</code> objects.</p><pre><code class="language-julia">p = :deinstitutionalization =&gt; :counterrevolutionaries
 
 pprint(p)
 #-&gt; :deinstitutionalization =&gt; :counterrevolutionaries
