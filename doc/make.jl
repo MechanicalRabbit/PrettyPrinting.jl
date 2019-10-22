@@ -9,6 +9,8 @@ using PrettyPrinting
 # Highlight indented code blocks as Julia code.
 using Markdown
 Markdown.Code(code) = Markdown.Code("julia", code)
+Documenter.Utilities.Markdown2._convert_inline(s::Markdown.Code) =
+    Documenter.Utilities.Markdown2.CodeSpan(s.code)
 
 makedocs(
     sitename = "PrettyPrinting.jl",
