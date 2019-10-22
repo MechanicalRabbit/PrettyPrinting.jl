@@ -80,6 +80,31 @@ output stream.
                    (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])]
     =#
 
+If you want to add a newline after the output, use the function `pprintln()`.
+
+    pprintln(data[1])
+    pprintln(data[2])
+    #=>
+    (name = "POLICE",
+     employees = [(name = "JEFFERY A",
+                   position = "SERGEANT",
+                   salary = 101442,
+                   rate = missing),
+                  (name = "NANCY A",
+                   position = "POLICE OFFICER",
+                   salary = 80016,
+                   rate = missing)])
+    (name = "OEMC",
+     employees = [(name = "LAKENYA A",
+                   position = "CROSSING GUARD",
+                   salary = missing,
+                   rate = 17.68),
+                  (name = "DORIS A",
+                   position = "CROSSING GUARD",
+                   salary = missing,
+                   rate = 19.38)])
+    =#
+
 
 ### Layout expressions
 
@@ -227,6 +252,7 @@ The algorithm for finding the optimal layout is based upon
 
 ```@docs
 PrettyPrinting.pprint
+PrettyPrinting.pprintln
 ```
 
 

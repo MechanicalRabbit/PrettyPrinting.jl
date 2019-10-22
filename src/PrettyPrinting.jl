@@ -6,7 +6,8 @@
 module PrettyPrinting
 
 export
-    pprint
+    pprint,
+    pprintln
 
 import Base:
     IndexStyle,
@@ -36,6 +37,19 @@ pprint(io::IO, data) =
 function pprint(io::IO, lt::Layout)
     render(io, best_fit(io, lt))
     nothing
+end
+
+"""
+    pprintln([io::IO], data)
+
+Displays the data using `pprint` and adds a newline.
+"""
+pprintln(data) =
+    pprintln(stdout, data)
+
+function pprintln(io::IO, data)
+    pprint(io, data)
+    println(io)
 end
 
 end
