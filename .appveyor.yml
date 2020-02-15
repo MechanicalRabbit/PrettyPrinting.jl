@@ -3,7 +3,7 @@
 environment:
   matrix:
   - julia_version: 1.0  # LTS release
-  - julia_version: 1.2  # Current stable release
+  - julia_version: 1.4  # Current stable release
   - julia_version: nightly
 
 matrix:

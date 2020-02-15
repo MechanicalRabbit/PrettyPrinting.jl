@@ -1,19 +1,20 @@
 #!/usr/bin/env julia
 
-using Pkg
-haskey(Pkg.installed(), "Documenter") || Pkg.add("Documenter")
-
 using Documenter
 using PrettyPrinting
 
 # Highlight indented code blocks as Julia code.
-using Markdown
-Markdown.Code(code) = Markdown.Code("julia", code)
-Documenter.Utilities.Markdown2._convert_inline(s::Markdown.Code) =
-    Documenter.Utilities.Markdown2.CodeSpan(s.code)
+using Documenter.Expanders: ExpanderPipeline, Selectors, Markdown, iscode
+abstract type DefaultLanguage <: ExpanderPipeline end
+Selectors.order(::Type{DefaultLanguage}) = 99.0
+Selectors.matcher(::Type{DefaultLanguage}, node, page, doc) =
+    iscode(node, "")
+Selectors.runner(::Type{DefaultLanguage}, node, page, doc) =
+    page.mapping[node] = Markdown.Code("julia", node.code)
 
 makedocs(
     sitename = "PrettyPrinting.jl",
+    format = Documenter.HTML(prettyurls=(get(ENV, "CI", nothing) == "true")),
     pages = [
         "Home" => "index.md",
     ],
