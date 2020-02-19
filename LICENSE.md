@@ -1,4 +1,4 @@
-Copyright (c) 2017-2019: Prometheus Research, LLC. &
+Copyright (c) 2017-2020: Prometheus Research, LLC &
                          Kyrylo Simonov
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
