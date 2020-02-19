@@ -3,8 +3,8 @@
 
 ## Overview
 
-`PrettyPrinting` is a Julia library for optimal formatting of composite data structures
-on a fixed-width terminal.
+PrettyPrinting is a Julia library for optimal formatting of composite data
+structures on a fixed-width terminal.
 
 
 ### Installation
@@ -17,7 +17,7 @@ julia> Pkg.add("PrettyPrinting")
 ```
 
 
-### Using `PrettyPrinting`
+### Using PrettyPrinting
 
 First, import the module.
 
@@ -108,9 +108,9 @@ If you want to add a newline after the output, use the function `pprintln()`.
 
 ### Layout expressions
 
-`PrettyPrinting` can be extended to format any custom data structure.  To let
-`PrettyPrinting` format a data structure, we need to encode its possible
-layouts in the form of a *layout expression*.
+PrettyPrinting can be extended to format any custom data structure.  To let
+PrettyPrinting format a data structure, we need to encode its possible layouts
+in the form of a *layout expression*.
 
 We will use the following definitions.
 
@@ -167,7 +167,7 @@ fit, which is expressed as a layout expression without a choice operator.
     best_fit(l)
     #-> literal("salary") * (literal(" = ") * literal("101442"))
 
-In addition, `PrettyPrinting` can generate some common layouts.  A
+In addition, PrettyPrinting can generate some common layouts.  A
 delimiter-separated pair can be generated with `pair_layout()`.
 
     pair_layout(literal("salary"), literal("101442"), sep=" = ")
@@ -190,7 +190,7 @@ A delimiter-separated list of items can be generated with `list_layout()`.
     =#
 
 
-### Extending `PrettyPrinting`
+### Extending PrettyPrinting
 
 We can make `pprint()` format objects of user-defined types.  For this purpose,
 we must implement the function `tile()`, which should map an object to its
