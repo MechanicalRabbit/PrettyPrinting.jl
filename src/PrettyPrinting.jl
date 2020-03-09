@@ -19,6 +19,7 @@ import Base:
 const DEFAULT_LINE_WIDTH = 79
 const DEFAULT_BREAK_COST = 1
 const DEFAULT_SPILL_COST = 2
+const TAB_SIZE = Ref{Int}(4)
 
 include("tile.jl")
 include("fit.jl")

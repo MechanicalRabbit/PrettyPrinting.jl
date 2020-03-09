@@ -117,7 +117,7 @@ function list_layout(items::Vector{Layout};
                      par::Tuple{String,String}=("(", ")"),
                      sep::String=", ",
                      sep_brk=:end,  # :start, :end, :both, or :none
-                     tab::Int=4,
+                     tab::Int=TAB_SIZE[],
                      nobrk::Int=10)
     !isempty(items) || return literal("$(prefix)$(par[1])$(par[2])")
     head_lt = literal("$(prefix)$(par[1])")
@@ -144,7 +144,7 @@ function pair_layout(fst::Layout,
                      snd::Layout;
                      sep::String=" => ",
                      sep_brk=:end,  # :start, :end, :both, or :none
-                     tab::Int=4)
+                     tab::Int=TAB_SIZE[])
     sepc_lt = literal(sep)
     sepl_lt = literal(sep_brk == :start || sep_brk == :both ? lstrip(sep) : "")
     sepr_lt = literal(sep_brk == :end || sep_brk == :both ? rstrip(sep) : "")
