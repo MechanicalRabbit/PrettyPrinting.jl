@@ -213,7 +213,7 @@ For example, consider a simple tree structure.
                   Node(:arc, [Node(:arch, [Node(:archduke),
                                            Node(:archer)])]),
                   Node(:awl)])
-    #-> Node(:a, Main.index.md.Node[ … ])
+    #-> Node(:a, DocSrcIndexMd.Node[ … ])
 
 To make `pprint()` format this tree, we must implement the function
 `tile(::Node)`.  A suitable layout expression for this tree could be generated
