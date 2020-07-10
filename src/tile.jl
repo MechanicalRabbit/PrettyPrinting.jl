@@ -236,34 +236,57 @@ end
 
 # Rendering
 
-render(io::IO, lt::Layout, col::Int=0) =
-    render(io, lt.blk, lt.args, col)
-
-function render(io::IO, blk::LiteralBlock, ::Vector{Layout}, col::Int)
-    print(io, blk.atom)
-    col + blk.len
-end
-
-function render(io::IO, ::HorizontalBlock, args::Vector{Layout}, col::Int)
-    for arg in args
-        col = render(io, arg, col)
+function render(io::IO, lt::Layout, col::Int=0, nl::Vector{UInt8}=UInt8[0x0A, 0x20, 0x20, 0x20, 0x20])
+    blk = lt.blk
+    args = lt.args
+    if blk isa LiteralBlock
+        col = render(io, blk, args, col, nl)
+    elseif blk isa HorizontalBlock
+        col = render(io, blk, args, col, nl)
+    elseif blk isa VerticalBlock
+        col = render(io, blk, args, col, nl)
+    else
+        col = render(io, blk, args, col, nl)::Int
     end
     col
 end
 
-function render(io::IO, ::VerticalBlock, args::Vector{Layout}, col::Int)
-    nl = "\n" * " " ^ col
+function render(io::IO, blk::LiteralBlock, ::Vector{Layout}, col::Int, ::Vector{UInt8})
+    atom = blk.atom
+    if atom isa String
+        print(io, atom)
+    else
+        print(io, atom)
+    end
+    col + blk.len
+end
+
+function render(io::IO, ::HorizontalBlock, args::Vector{Layout}, col::Int, nl::Vector{UInt8})
+    for arg in args
+        col = render(io, arg, col, nl)
+    end
+    col
+end
+
+function render(io::IO, ::VerticalBlock, args::Vector{Layout}, col::Int, nl::Vector{UInt8})
+    l = length(nl)
+    if col + 1 > l
+        resize!(nl, col + 1)
+        for k = l:col
+            @inbounds nl[k + 1] = 0x20
+        end
+    end
     col′ = col
     first = true
     for arg in args
         if !first
-            print(io, nl)
+            GC.@preserve nl unsafe_write(io, pointer(nl), col + 1)
         end
-        col′ = render(io, arg, col)
+        col′ = render(io, arg, col, nl)
         first = false
     end
     col′
 end
 
-render(io::IO, ::Union{ChoiceBlock, PenaltyBlock}, args::Vector{Layout}, col::Int) =
-    !isempty(args) ? render(io, args[1], col) : col
+render(io::IO, ::Union{ChoiceBlock, PenaltyBlock}, args::Vector{Layout}, col::Int, nl::Vector{UInt8}) =
+    !isempty(args) ? render(io, args[1], col, nl) : col
