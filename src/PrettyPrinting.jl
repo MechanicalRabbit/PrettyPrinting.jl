@@ -28,7 +28,7 @@ include("fit.jl")
 
 Displays the data so that it fits the width of the output screen.
 """
-pprint(data) =
+pprint(@nospecialize data) =
     pprint(stdout, data)
 
 pprint(io::IO, data) =
@@ -44,7 +44,7 @@ end
 
 Displays the data using `pprint` and adds a newline.
 """
-pprintln(data) =
+pprintln(@nospecialize data) =
     pprintln(stdout, data)
 
 function pprintln(io::IO, data)
