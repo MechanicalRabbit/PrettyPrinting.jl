@@ -4,6 +4,8 @@ on:
     branches: [master]
     tags: ['*']
   pull_request:
+  schedule:
+  - cron: '0 0 1 * *'
 jobs:
   test:
     name: Test on ${{ matrix.name }}
