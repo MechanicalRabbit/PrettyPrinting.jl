@@ -3,8 +3,7 @@
 *PrettyPrinting is a Julia library for optimal formatting of composite data
 structures on a fixed-width terminal.*
 
-[![Linux/OSX Build Status][travis-img]][travis-url]
-[![Windows Build Status][appveyor-img]][appveyor-url]
+[![Build Status][ci-img]][ci-url]
 [![Code Coverage Status][codecov-img]][codecov-url]
 [![Open Issues][issues-img]][issues-url]
 [![Documentation][doc-dev-img]][doc-dev-url]
@@ -71,10 +70,8 @@ The algorithm for finding the optimal layout is based upon
 [Phillip Yelland, A New Approach to Optimal Code Formatting, 2016][rfmt-paper].
 
 
-[travis-img]: https://travis-ci.org/rbt-lang/PrettyPrinting.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/rbt-lang/PrettyPrinting.jl
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/rbt-lang/PrettyPrinting.jl?branch=master&svg=true
-[appveyor-url]: https://ci.appveyor.com/project/rbt-lang/prettyprinting-jl/branch/master
+[ci-img]: https://github.com/rbt-lang/PrettyPrinting.jl/workflows/CI/badge.svg
+[ci-url]: https://github.com/rbt-lang/PrettyPrinting.jl/actions?query=workflow%3ACI+branch%3Amaster
 [codecov-img]: https://codecov.io/gh/rbt-lang/PrettyPrinting.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/rbt-lang/PrettyPrinting.jl
 [issues-img]: https://img.shields.io/github/issues/rbt-lang/PrettyPrinting.jl.svg
