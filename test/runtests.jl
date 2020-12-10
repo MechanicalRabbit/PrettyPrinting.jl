@@ -3,5 +3,5 @@
 using PrettyPrinting
 using NarrativeTest
 
-args = !isempty(ARGS) ? ARGS : [relpath(joinpath(dirname(abspath(PROGRAM_FILE)), "../doc/src"))]
-exit(!runtests(args))
+default = [relpath(joinpath(dirname(abspath(PROGRAM_FILE)), "../doc/src"))]
+runtests(default=default)
