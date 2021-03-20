@@ -70,14 +70,14 @@ The algorithm for finding the optimal layout is based upon
 [Phillip Yelland, A New Approach to Optimal Code Formatting, 2016][rfmt-paper].
 
 
-[ci-img]: https://github.com/rbt-lang/PrettyPrinting.jl/workflows/CI/badge.svg
-[ci-url]: https://github.com/rbt-lang/PrettyPrinting.jl/actions?query=workflow%3ACI+branch%3Amaster
-[codecov-img]: https://codecov.io/gh/rbt-lang/PrettyPrinting.jl/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/rbt-lang/PrettyPrinting.jl
-[issues-img]: https://img.shields.io/github/issues/rbt-lang/PrettyPrinting.jl.svg
-[issues-url]: https://github.com/rbt-lang/PrettyPrinting.jl/issues
+[ci-img]: https://github.com/MechanicalRabbit/PrettyPrinting.jl/workflows/CI/badge.svg
+[ci-url]: https://github.com/MechanicalRabbit/PrettyPrinting.jl/actions?query=workflow%3ACI+branch%3Amaster
+[codecov-img]: https://codecov.io/gh/MechanicalRabbit/PrettyPrinting.jl/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/MechanicalRabbit/PrettyPrinting.jl
+[issues-img]: https://img.shields.io/github/issues/MechanicalRabbit/PrettyPrinting.jl.svg
+[issues-url]: https://github.com/MechanicalRabbit/PrettyPrinting.jl/issues
 [doc-dev-img]: https://img.shields.io/badge/doc-dev-blue.svg
-[doc-dev-url]: https://rbt-lang.github.io/PrettyPrinting.jl/dev/
+[doc-dev-url]: https://mechanicalrabbit.github.io/PrettyPrinting.jl/dev/
 [license-img]: https://img.shields.io/badge/license-MIT-blue.svg
-[license-url]: https://raw.githubusercontent.com/rbt-lang/PrettyPrinting.jl/master/LICENSE.md
+[license-url]: https://raw.githubusercontent.com/MechanicalRabbit/PrettyPrinting.jl/master/LICENSE.md
 [rfmt-paper]: https://ai.google/research/pubs/pub44667

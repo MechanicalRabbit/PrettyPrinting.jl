@@ -21,5 +21,5 @@ makedocs(
     modules = [PrettyPrinting])
 
 deploydocs(
-    repo = "github.com/rbt-lang/PrettyPrinting.jl.git",
+    repo = "github.com/MechanicalRabbit/PrettyPrinting.jl.git",
 )
