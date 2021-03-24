@@ -1,7 +1,7 @@
 authors = ["Kirill Simonov <xi@resolvent.net>"]
 name = "PrettyPrinting"
 uuid = "54e16d92-306c-5ea0-a30b-337be88ac337"
-version = "0.2.1"
+version = "0.3.0"
 
 [deps]
 
