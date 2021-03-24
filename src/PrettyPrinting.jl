@@ -21,6 +21,7 @@ const DEFAULT_BREAK_COST = 1
 const DEFAULT_SPILL_COST = 2
 
 include("tile.jl")
+include("expr.jl")
 include("fit.jl")
 
 """

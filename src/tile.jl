@@ -37,19 +37,20 @@ end
 let NO_ARGS = Layout[],
     INDENTS = Layout[Layout(LiteralBlock(" " ^ i, i), NO_ARGS) for i = 1:DEFAULT_LINE_WIDTH]
 
-    global literal, indent
+global literal, indent
 
-    literal(str::String) =
-        Layout(LiteralBlock(str, textwidth(str)), NO_ARGS)
+literal(str::String) =
+    Layout(LiteralBlock(str, textwidth(str)), NO_ARGS)
 
-    literal(str::Union{AbstractString,Symbol}) =
-        literal(string(str))
+literal(str::Union{AbstractString,Symbol}) =
+    literal(string(str))
 
-    literal(atom, len::Int) =
-        Layout(LiteralBlock(atom, len), NO_ARGS)
+literal(atom, len::Int) =
+    Layout(LiteralBlock(atom, len), NO_ARGS)
 
-    indent(i::Int) =
-        1 <= i <= length(INDENTS) ? INDENTS[i] : Layout(LiteralBlock(" " ^ i, i), NO_ARGS)
+indent(i::Int) =
+    1 <= i <= length(INDENTS) ? INDENTS[i] : Layout(LiteralBlock(" " ^ i, i), NO_ARGS)
+
 end
 
 const ZERO = literal("")
@@ -61,22 +62,31 @@ show(io::IO, lt::Layout) =
 
 # Layout combinators.
 
-(*)(lt::Layout, lts::Layout...) =
-    let lts = filter(!isequal(ZERO), collect(Layout, (lt, lts...)))
-        if isempty(lts)
-            ZERO
-        elseif length(lts) == 1
-            lts[1]
-        else
-            Layout(HorizontalBlock(), lts)
-        end
+function (*)(lts::Vector{Layout})
+    lts = filter(!isequal(ZERO), lts)
+    if isempty(lts)
+        ZERO
+    elseif length(lts) == 1
+        lts[1]
+    else
+        Layout(HorizontalBlock(), lts)
     end
+end
 
-(/)(lt::Layout, lts::Layout...) =
-    Layout(VerticalBlock(), collect(Layout, (lt, lts...)))
+(/)(lts::Vector{Layout}) =
+    Layout(VerticalBlock(), lts)
 
-(|)(lt::Layout, lts::Layout...) =
-    Layout(ChoiceBlock(), collect(Layout, (lt, lts...)))
+(|)(lts::Vector{Layout}) =
+    Layout(ChoiceBlock(), lts)
+
+(*)(lt1::Layout, lts::Layout...) =
+    (*)(Layout[lt1, lts...])
+
+(/)(lt1::Layout, lts::Layout...) =
+    (/)(Layout[lt1, lts...])
+
+(|)(lt1::Layout, lts::Layout...) =
+    (|)(Layout[lt1, lts...])
 
 penalize(lt::Layout; cost::Int=0, break_factor::Int=1, spill_factor::Int=1) =
     Layout(PenaltyBlock(cost=cost, break_factor=break_factor, spill_factor=spill_factor), Layout[lt])
@@ -113,15 +123,16 @@ function nobreak(blk::Union{ChoiceBlock,PenaltyBlock}, args::Vector{Layout})
 end
 
 function list_layout(items::Vector{Layout};
-                     prefix::Union{String,Symbol}="",
+                     prefix::Union{String,Symbol,Layout}="",
                      par::Tuple{String,String}=("(", ")"),
                      sep::String=", ",
                      sep_brk=:end,  # :start, :end, :both, or :none
                      tab::Int=4,
                      nobrk::Int=10)
-    !isempty(items) || return literal("$(prefix)$(par[1])$(par[2])")
-    head_lt = literal("$(prefix)$(par[1])")
-    tail_lt = literal("$(par[2])")
+    prefix_lt = prefix isa Layout ? prefix : literal(prefix)
+    head_lt = prefix_lt * literal(par[1])
+    tail_lt = literal(par[2])
+    !isempty(items) || return head_lt * tail_lt
     sepc_lt = literal(sep)
     sepl_lt = literal(sep_brk == :start || sep_brk == :both ? lstrip(sep) : "")
     sepr_lt = literal(sep_brk == :end || sep_brk == :both ? rstrip(sep) : "")
@@ -145,16 +156,22 @@ function pair_layout(fst::Layout,
                      sep::String=" => ",
                      sep_brk=:end,  # :start, :end, :both, or :none
                      tab::Int=4)
+    nbfst = nobreak(fst)
     sepc_lt = literal(sep)
     sepl_lt = literal(sep_brk == :start || sep_brk == :both ? lstrip(sep) : "")
     sepr_lt = literal(sep_brk == :end || sep_brk == :both ? rstrip(sep) : "")
     tab_lt = indent(tab)
-    ((nobreak(fst) * sepc_lt) | ((fst * sepr_lt) / (tab_lt * sepl_lt))) * snd
+    nbfst !== nothing ?
+        ((nobreak(fst) * sepc_lt) | ((fst * sepr_lt) / (tab_lt * sepl_lt))) * snd :
+        ((fst * sepr_lt) / (tab_lt * sepl_lt)) * snd
 end
 
 # Fallback layout.
 
-tile(obj) = literal(repr(obj))
+tile_repr(obj) =
+    literal(repr(obj))
+
+tile(obj) = tile_expr_or_repr(quoteof(obj))
 
 # Layouts for standard types.
 
