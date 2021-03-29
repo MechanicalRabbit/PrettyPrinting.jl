@@ -59,9 +59,9 @@ julia> pprint(data)
                 rate = 19.38)])]
 ```
 
-PrettyPrinting knows how to format tuples, vectors, and dictionaries.  Other
-data types should implement the function `tile()` as described in the
-[**Documentation**][doc-dev-url].
+PrettyPrinting knows how to format tuples, named tuples, vectors, sets, and
+dictionaries.  Other data types should implement the function `tile()` as
+described in the [**Documentation**][doc-dev-url].
 
 
 ## Acknowledgements

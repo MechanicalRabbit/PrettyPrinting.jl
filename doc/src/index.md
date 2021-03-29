@@ -367,16 +367,22 @@ In particular, `pprint()` can format `Pair` objects.
      :intuition]
     =#
 
-Finally, `pprint()` is implemented for dictionaries and named tuples.
+Finally, `pprint()` is implemented for sets, dictionaries and named tuples.
 
     pprint(Dict())
     #-> Dict()
+
+    pprint(Set())
+    #-> Set()
 
     pprint((deinstitutionalization = :counterrevolutionaries,))
     #-> (deinstitutionalization = :counterrevolutionaries,)
 
     pprint(Dict(:deinstitutionalization => :counterrevolutionaries))
     #-> Dict(:deinstitutionalization => :counterrevolutionaries)
+
+    pprint(Set([:deinstitutionalization]))
+    #-> Set([:deinstitutionalization])
 
     nt = (deinstitutionalization = [:notation, :nation, :initialization, :intuition],
           counterrevolutionaries = [:orientation, :interculture, :translucent])
@@ -397,6 +403,9 @@ Dict(:deinstitutionalization =>
          [:notation, :nation, :initialization, :intuition],
      :counterrevolutionaries => [:orientation, :interculture, :translucent])
 =#
+
+pprint(Set([:deinstitutionalization, :counterrevolutionaries]))
+#-> Set([:deinstitutionalization, :counterrevolutionaries])
 ```
 
 

@@ -188,6 +188,14 @@ tile(t::Tuple) =
 tile(v::Vector) =
     list_layout(Layout[tile(x) for x in v], par=("[", "]"))
 
+tile(s::Set) =
+    if isempty(s)
+        literal("Set()")
+    else
+        list_layout(Layout[list_layout([tile(x) for x in s], par=("[", "]"))],
+                    prefix=:Set)
+    end
+
 tile(t::NamedTuple) =
     if length(t) == 1
         ((key, val),) = pairs(t)
