@@ -147,8 +147,7 @@ function tile_expr(ex::Expr, pr = -1)
     elseif @isexpr ex Expr(:module, notbare::Bool, name::Symbol, body)
         return tile_expr_module(notbare ? :module : :baremodule, name, body)
     elseif @isexpr ex Expr(:export, names...)
-        return list_layout(prefix = "export ", par = ("", ""),
-                           Layout[tile_expr(name, 0) for name in names])
+        return tile_expr_export(names)
     elseif @isexpr ex Expr(head := :using || :import, Expr(:(:), from, args...))
         return tile_expr_import(head, from, args)
     elseif @isexpr ex Expr(head := :using || :import, arg)
@@ -232,7 +231,6 @@ function tile_expr(ex::Expr, pr = -1)
     elseif @isexpr ex Expr(:$, arg)
         return literal("\$(") * tile_expr(arg) * literal(")")
     end
-    dump(ex)
     tile_expr_fallback(ex)
 end
 
@@ -308,7 +306,7 @@ end
 
 tile_expr_export(args) =
     list_layout(prefix = "export ", par = ("", ""),
-                Layout[tile_expr(arg, 0) for arg in arg])
+                Layout[tile_expr(arg, 0) for arg in args])
 
 tile_expr_import_path(ex) =
     (@isexpr ex Expr(:., args...)) ?
@@ -416,10 +414,10 @@ function tile_expr_try(body, name, catch_body, finally_body)
     end
     if finally_body !== nothing
         lt = lt / literal("finally")
-    end
-    finally_body_lt = tile_exprs(finally_body)
-    if finally_body_lt !== ZERO
-        lt = lt / (indent(4) * finally_body_lt)
+        finally_body_lt = tile_exprs(finally_body)
+        if finally_body_lt !== ZERO
+            lt = lt / (indent(4) * finally_body_lt)
+        end
     end
     lt = lt / literal("end")
     lt

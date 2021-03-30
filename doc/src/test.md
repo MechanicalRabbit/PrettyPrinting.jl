@@ -300,3 +300,207 @@ Parameter `tab` specifies the indentation level.
     initialization,
     intuition)
     =#
+
+
+## Formatting Julia Code
+
+`pprint()` can format `Expr` objects.  A fairly complete subset of Julia syntax
+is supported.
+
+    ex = quote
+        module Test
+        export f
+        using Dates
+        import Base: show
+        abstract type A{T}
+        end
+        struct S{T} <: A{T}
+            x::T
+        end
+        const v1 = [1,2,3]
+        const v2 = Number[1,2,3]
+        const t1 = (1,)
+        const t2 = (1,2,3)
+        const p = 1 => 2
+        Base.show(Base.stdout)
+        Base.@show Base.stdout
+        println("x = $x")
+        "Compute nothing"
+        function f(::Number)
+            return
+        end
+        g(y) = y > 0 ? y : -y
+        h(args...; kw = 0) = (args, kw)
+        global G
+        if (x1 - (x2 - x3)) > ((x1 - x2) - x3)
+            if p1 && p2 || p3 && p4
+                nothing
+            elseif (p1 || p2) && (p3 || p4)
+                nothing
+            else
+                nothing
+            end
+        elseif (x1 ^ (x2 ^ x3)) <= ((x1 ^ x2) ^ x3) < x4 .+ x5
+            if !p
+                nothing
+            end
+        end
+        while x > 0
+            break
+        end
+        for t = 1:10
+            continue
+        end
+        begin
+            x = 1
+            y = 2
+            x + y
+        end
+        0 + (x = 1; y = 2; x + y)
+        let x = 1
+            y = 2
+            x + y
+        end
+        quote
+            $x + $y
+        end
+        try
+            error()
+        catch err
+            nothing
+        end
+        try
+            error()
+        finally
+            nothing
+        end
+        try
+            error()
+        catch err
+            nothing
+        finally
+            nothing
+        end
+        foreach(1:10) do k
+            println(k)
+        end
+        [k for k = 1:10 if isodd(k)]
+        $(Expr(:fallback, 1, 2, 3))
+        end
+    end
+
+    pprint(ex)
+    #=>
+    quote
+        module Test
+
+        export f
+
+        using Dates
+
+        import Base: show
+
+        abstract type A{T}
+        end
+
+        struct S{T} <: A{T}
+            x::T
+        end
+
+        const v1 = [1, 2, 3]
+
+        const v2 = Number[1, 2, 3]
+
+        const t1 = (1,)
+
+        const t2 = (1, 2, 3)
+
+        const p = 1 => 2
+
+        Base.show(Base.stdout)
+
+        Base.@show Base.stdout
+
+        println("x = $(x)")
+
+        "Compute nothing"
+        function f(::Number)
+            return nothing
+        end
+
+        g(y) = y > 0 ? y : -y
+
+        h(args...; kw = 0) = (args, kw)
+
+        global G
+
+        if x1 - (x2 - x3) > x1 - x2 - x3
+            if p1 && p2 || p3 && p4
+                nothing
+            elseif (p1 || p2) && (p3 || p4)
+                nothing
+            else
+                nothing
+            end
+        elseif x1 ^ x2 ^ x3 <= (x1 ^ x2) ^ x3 < x4 .+ x5
+            if !(p)
+                nothing
+            end
+        end
+
+        while x > 0
+            break
+        end
+
+        for t = 1:10
+            continue
+        end
+
+        begin
+            x = 1
+            y = 2
+            x + y
+        end
+
+        0 + (x = 1; y = 2; x + y)
+
+        let x = 1
+            y = 2
+            x + y
+        end
+
+        quote
+            $(x) + $(y)
+        end
+
+        try
+            error()
+        catch err
+            nothing
+        end
+
+        try
+            error()
+        finally
+            nothing
+        end
+
+        try
+            error()
+        catch err
+            nothing
+        finally
+            nothing
+        end
+
+        foreach(1:10) do k
+            println(k)
+        end
+
+        [k for k = 1:10 if isodd(k)]
+
+        $(Expr(:fallback, 1, 2, 3))
+
+        end
+    end
+    =#
