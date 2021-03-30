@@ -122,7 +122,7 @@ statements, and expressions.
 
 ## Extending PrettyPrinting
 
-It is customary to display Julia objects as a valid Julia expression that
+It is customary to display a Julia object as a valid Julia expression that
 constructs the object.  The ability of `pprint()` to format Julia code makes it
 easy to implement this functionality for user-defined types.
 
@@ -197,12 +197,7 @@ in the form of a *layout expression*.
 
 We will use the following definitions.
 
-    using PrettyPrinting:
-        best_fit,
-        indent,
-        list_layout,
-        literal,
-        pair_layout
+    using PrettyPrinting: best_fit, indent, list_layout, literal, pair_layout
 
 A fixed single-line layout is created with `literal()`.
 
@@ -244,8 +239,9 @@ choice (`|`) operator.
     literal("salary") * literal(" =") / indent(4) * literal("101442")
     =#
 
-The pretty-printing engine can search through possible layouts to find the best
-fit, which is expressed as a layout expression without the choice operator.
+The pretty-printing engine can search through all potential layouts to find the
+best fit, which is expressed as a layout expression without the choice
+operator.
 
     best_fit(l)
     #-> literal("salary") * (literal(" = ") * literal("101442"))
