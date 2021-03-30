@@ -227,8 +227,14 @@ intuition)
     end
     const v1 = [1,2,3]
     const v2 = Number[1,2,3]
-    const t = (1,2,3)
-    function f(x::Number)
+    const t1 = (1,)
+    const t2 = (1,2,3)
+    const p = 1 =&gt; 2
+    Base.show(Base.stdout)
+    Base.@show Base.stdout
+    println(&quot;x = $x&quot;)
+    &quot;Compute nothing&quot;
+    function f(::Number)
         return
     end
     g(y) = y &gt; 0 ? y : -y
@@ -247,10 +253,14 @@ intuition)
         end
     end
     while x &gt; 0
-        x -= 1
+        break
     end
     for t = 1:10
-        x += 1
+        continue
+    end
+    let x = 1
+        y = 2
+        x + y
     end
     try
         error()
@@ -262,11 +272,17 @@ intuition)
     finally
         2
     end
+    try
+        error()
+    catch err
+        1
+    finally
+        2
+    end
     foreach(1:10) do k
         println(k)
     end
-    @show x
-    println(&quot;x = $x&quot;)
+    [k for k = 1:10 if isodd(k)]
     end
 end
 
@@ -292,9 +308,20 @@ quote
 
     const v2 = Number[1, 2, 3]
 
-    const t = (1, 2, 3)
+    const t1 = (1,)
 
-    function f(x::Number)
+    const t2 = (1, 2, 3)
+
+    const p = 1 =&gt; 2
+
+    Base.show(Base.stdout)
+
+    Base.@show Base.stdout
+
+    println(&quot;x = $(x)&quot;)
+
+    &quot;Compute nothing&quot;
+    function f(::Number)
         return nothing
     end
 
@@ -317,11 +344,16 @@ quote
     end
 
     while x &gt; 0
-        x -= 1
+        break
     end
 
     for t = 1:10
-        x += 1
+        continue
+    end
+
+    let x = 1
+        y = 2
+        x + y
     end
 
     try
@@ -337,14 +369,20 @@ quote
         2
     end
 
+    try
+        error()
+    catch err
+        1
+    finally
+        2
+    end
+
     foreach(1:10) do k
         println(k)
     end
 
-    @show x
-
-    println(&quot;x = $(x)&quot;)
+    [k for k = 1:10 if isodd(k)]
 
     end
 end
-=#</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../api/">« API Reference</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 30 March 2021 07:18">Tuesday 30 March 2021</span>. Using Julia version 1.6.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+=#</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../api/">« API Reference</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 30 March 2021 07:44">Tuesday 30 March 2021</span>. Using Julia version 1.6.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
