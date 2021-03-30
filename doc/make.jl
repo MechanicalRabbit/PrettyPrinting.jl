@@ -17,6 +17,9 @@ makedocs(
     format = Documenter.HTML(prettyurls=(get(ENV, "CI", nothing) == "true")),
     pages = [
         "Home" => "index.md",
+        "guide.md",
+        "api.md",
+        "test.md",
     ],
     modules = [PrettyPrinting])
 
