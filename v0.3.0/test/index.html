@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Test Suite · PrettyPrinting.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">PrettyPrinting.jl</span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../guide/">Usage Guide</a></li><li><a class="tocitem" href="../api/">API Reference</a></li><li class="is-active"><a class="tocitem" href>Test Suite</a><ul class="internal"><li><a class="tocitem" href="#Formatting-Built-in-Data-Structures"><span>Formatting Built-in Data Structures</span></a></li><li><a class="tocitem" href="#Using-pair_layout()"><span>Using <code>pair_layout()</code></span></a></li><li><a class="tocitem" href="#Using-list_layout()"><span>Using <code>list_layout()</code></span></a></li><li><a class="tocitem" href="#Formatting-Julia-Code"><span>Formatting Julia Code</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Test Suite</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Test Suite</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/MechanicalRabbit/PrettyPrinting.jl/blob/master/doc/src/test.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Test-Suite"><a class="docs-heading-anchor" href="#Test-Suite">Test Suite</a><a id="Test-Suite-1"></a><a class="docs-heading-anchor-permalink" href="#Test-Suite" title="Permalink"></a></h1><p>We start with importing the package.</p><pre><code class="language-julia">using PrettyPrinting: list_layout, literal, pair_layout, pprint, pprintln</code></pre><p>The following function overrides the width of the output terminal.</p><pre><code class="language-julia">resize(w) = IOContext(stdout, :displaysize =&gt; (24, w))</code></pre><h2 id="Formatting-Built-in-Data-Structures"><a class="docs-heading-anchor" href="#Formatting-Built-in-Data-Structures">Formatting Built-in Data Structures</a><a id="Formatting-Built-in-Data-Structures-1"></a><a class="docs-heading-anchor-permalink" href="#Formatting-Built-in-Data-Structures" title="Permalink"></a></h2><p>The function <code>pprint()</code> supports many built-in data structures.</p><p>In particular, <code>pprint()</code> can format <code>Pair</code> objects.</p><pre><code class="language-julia">p = :deinstitutionalization =&gt; :counterrevolutionaries
+
+pprint(p)
+#-&gt; :deinstitutionalization =&gt; :counterrevolutionaries
+
+pprint(resize(40), p)
+#=&gt;
+:deinstitutionalization =&gt;
+    :counterrevolutionaries
+=#</code></pre><p><code>pprint(::Pair)</code> can handle composite keys and values.</p><pre><code class="language-julia">p = :deinstitutionalization =&gt; [:notation, :nation, :initialization, :intuition]
+
+pprint(p)
+#-&gt; :deinstitutionalization =&gt; [:notation, :nation, :initialization, :intuition]
+
+pprint(resize(60), p)
+#=&gt;
+:deinstitutionalization =&gt;
+    [:notation, :nation, :initialization, :intuition]
+=#
+
+pprint(resize(50), p)
+#=&gt;
+:deinstitutionalization =&gt; [:notation,
+                            :nation,
+                            :initialization,
+                            :intuition]
+=#
+
+pprint(resize(40), p)
+#=&gt;
+:deinstitutionalization =&gt;
+    [:notation,
+     :nation,
+     :initialization,
+     :intuition]
+=#
+
+p = [:orientation, :interculture, :translucent] =&gt; :counterrevolutionaries
+
+pprint(p)
+#-&gt; [:orientation, :interculture, :translucent] =&gt; :counterrevolutionaries
+
+pprint(resize(60), p)
+#=&gt;
+[:orientation, :interculture, :translucent] =&gt;
+    :counterrevolutionaries
+=#
+
+pprint(resize(40), p)
+#=&gt;
+[:orientation,
+ :interculture,
+ :translucent] =&gt;
+    :counterrevolutionaries
+=#</code></pre><p><code>pprint()</code> can also format tuples and vectors.</p><pre><code class="language-julia">pprint(())
+#-&gt; ()
+
+pprint([])
+#-&gt; []
+
+pprint((:deinstitutionalization,))
+#-&gt; (:deinstitutionalization,)
+
+pprint([:deinstitutionalization])
+#-&gt; [:deinstitutionalization]
+
+t = (:notation, :nation, :initialization, :intuition)
+
+pprint(t)
+#-&gt; (:notation, :nation, :initialization, :intuition)
+
+pprint(collect(t))
+#-&gt; [:notation, :nation, :initialization, :intuition]
+
+pprint(resize(40), t)
+#=&gt;
+(:notation,
+ :nation,
+ :initialization,
+ :intuition)
+=#
+
+pprint(resize(40), collect(t))
+#=&gt;
+[:notation,
+ :nation,
+ :initialization,
+ :intuition]
+=#</code></pre><p>Finally, <code>pprint()</code> is implemented for sets, dictionaries and named tuples.</p><pre><code class="language-julia">pprint(Dict())
+#-&gt; Dict()
+
+pprint(Set())
+#-&gt; Set()
+
+pprint((deinstitutionalization = :counterrevolutionaries,))
+#-&gt; (deinstitutionalization = :counterrevolutionaries,)
+
+pprint(Dict(:deinstitutionalization =&gt; :counterrevolutionaries))
+#-&gt; Dict(:deinstitutionalization =&gt; :counterrevolutionaries)
+
+pprint(Set([:deinstitutionalization]))
+#-&gt; Set([:deinstitutionalization])
+
+nt = (deinstitutionalization = [:notation, :nation, :initialization, :intuition],
+      counterrevolutionaries = [:orientation, :interculture, :translucent])
+
+pprint(nt)
+#=&gt;
+(deinstitutionalization = [:notation, :nation, :initialization, :intuition],
+ counterrevolutionaries = [:orientation, :interculture, :translucent])
+=#</code></pre><p>The following test has to be skipped because the order of entries in a dictionary is unstable.</p><pre><code class="language-julia">pprint(Dict(pairs(nt)))
+#=&gt;
+Dict(:deinstitutionalization =&gt;
+         [:notation, :nation, :initialization, :intuition],
+     :counterrevolutionaries =&gt; [:orientation, :interculture, :translucent])
+=#
+
+pprint(Set([:deinstitutionalization, :counterrevolutionaries]))
+#-&gt; Set([:deinstitutionalization, :counterrevolutionaries])</code></pre><h2 id="Using-pair_layout()"><a class="docs-heading-anchor" href="#Using-pair_layout()">Using <code>pair_layout()</code></a><a id="Using-pair_layout()-1"></a><a class="docs-heading-anchor-permalink" href="#Using-pair_layout()" title="Permalink"></a></h2><p>Function <code>pair_layout()</code> generates a layout expression for <code>Pair</code>-like objects.</p><pre><code class="language-julia">kl = literal(:deinstitutionalization)
+vl = literal(:counterrevolutionaries)
+
+pl = pair_layout(kl, vl)
+
+pprint(pl)
+#-&gt; deinstitutionalization =&gt; counterrevolutionaries
+
+pprint(resize(40), pl)
+#=&gt;
+deinstitutionalization =&gt;
+    counterrevolutionaries
+=#</code></pre><p>Use parameter <code>sep</code> to change the separator.</p><pre><code class="language-julia">pprint(pair_layout(kl, vl, sep=&quot; -&gt; &quot;))
+#-&gt; deinstitutionalization -&gt; counterrevolutionaries</code></pre><p>Parameter <code>sep_brk</code> controls the position of the separator with respect to the line break.</p><pre><code class="language-julia">pprint(resize(40), pair_layout(kl, vl, sep_brk=:start))
+#=&gt;
+deinstitutionalization
+    =&gt; counterrevolutionaries
+=#
+
+pprint(resize(40), pair_layout(kl, vl, sep_brk=:end))
+#=&gt;
+deinstitutionalization =&gt;
+    counterrevolutionaries
+=#
+
+pprint(resize(40), pair_layout(kl, vl, sep_brk=:both))
+#=&gt;
+deinstitutionalization =&gt;
+    =&gt; counterrevolutionaries
+=#
+
+pprint(resize(40), pair_layout(kl, vl, sep_brk=:none))
+#=&gt;
+deinstitutionalization
+    counterrevolutionaries
+=#</code></pre><p>Parameter <code>tab</code> specifies the indentation level.</p><pre><code class="language-julia">pprint(resize(40), pair_layout(kl, vl, tab=0))
+#=&gt;
+deinstitutionalization =&gt;
+counterrevolutionaries
+=#</code></pre><h2 id="Using-list_layout()"><a class="docs-heading-anchor" href="#Using-list_layout()">Using <code>list_layout()</code></a><a id="Using-list_layout()-1"></a><a class="docs-heading-anchor-permalink" href="#Using-list_layout()" title="Permalink"></a></h2><p>Function <code>list_layout()</code> generates a layout expression for list-like objects.</p><pre><code class="language-julia">ls = literal.([:notation, :nation, :initialization, :intuition])
+
+ll = list_layout(ls)
+
+pprint(ll)
+#-&gt; (notation, nation, initialization, intuition)
+
+pprint(resize(40), ll)
+#=&gt;
+(notation,
+ nation,
+ initialization,
+ intuition)
+=#</code></pre><p>Use parameter <code>prefix</code> to add a prefix to the list.  This is useful for generating functional notation.</p><pre><code class="language-julia">pprint(resize(30), list_layout(ls, prefix=:deinstitutionalization))
+#=&gt;
+deinstitutionalization(
+    notation,
+    nation,
+    initialization,
+    intuition)
+=#</code></pre><p>Parameter <code>par</code> specifies the left and the right parentheses.</p><pre><code class="language-julia">pprint(list_layout(ls, par=(&quot;[&quot;,&quot;]&quot;)))
+#-&gt; [notation, nation, initialization, intuition]</code></pre><p>Parameter <code>sep</code> to specifies the separator.</p><pre><code class="language-julia">pprint(list_layout(ls, sep=&quot; * &quot;))
+#-&gt; (notation * nation * initialization * intuition)</code></pre><p>Parameter <code>sep_brk</code> controls the position of separators with respect to line breaks.</p><pre><code class="language-julia">pprint(resize(40), list_layout(ls, sep_brk=:start))
+#=&gt;
+(notation
+ , nation
+ , initialization
+ , intuition)
+=#
+
+pprint(resize(40), list_layout(ls, sep_brk=:end))
+#=&gt;
+(notation,
+ nation,
+ initialization,
+ intuition)
+=#
+
+pprint(resize(40), list_layout(ls, sep_brk=:both))
+#=&gt;
+(notation,
+ , nation,
+ , initialization,
+ , intuition)
+=#
+
+pprint(resize(40), list_layout(ls, sep_brk=:none))
+#=&gt;
+(notation
+ nation
+ initialization
+ intuition)
+=#</code></pre><p>Parameter <code>tab</code> specifies the indentation level.</p><pre><code class="language-julia">pprint(resize(30), list_layout(ls, prefix=:deinstitutionalization, tab=0))
+#=&gt;
+deinstitutionalization(
+notation,
+nation,
+initialization,
+intuition)
+=#</code></pre><h2 id="Formatting-Julia-Code"><a class="docs-heading-anchor" href="#Formatting-Julia-Code">Formatting Julia Code</a><a id="Formatting-Julia-Code-1"></a><a class="docs-heading-anchor-permalink" href="#Formatting-Julia-Code" title="Permalink"></a></h2><p><code>pprint()</code> can format <code>Expr</code> objects.  A fairly complete subset of Julia syntax is supported.</p><pre><code class="language-julia">ex = quote
+    module Test
+    export f
+    using Dates
+    import Base: show
+    abstract type A{T}
+    end
+    struct S{T} &lt;: A{T}
+        x::T
+    end
+    const v1 = [1,2,3]
+    const v2 = Number[1,2,3]
+    const t1 = (1,)
+    const t2 = (1,2,3)
+    const p = 1 =&gt; 2
+    Base.show(Base.stdout)
+    Base.@show Base.stdout
+    println(&quot;x = $x&quot;)
+    &quot;Compute nothing&quot;
+    function f(::Number)
+        return
+    end
+    g(y) = y &gt; 0 ? y : -y
+    h(args...; kw = 0) = (args, kw)
+    global G
+    if (x1 - (x2 - x3)) &gt; ((x1 - x2) - x3)
+        if p1 &amp;&amp; p2 || p3 &amp;&amp; p4
+            nothing
+        elseif (p1 || p2) &amp;&amp; (p3 || p4)
+            nothing
+        else
+            nothing
+        end
+    elseif (x1 ^ (x2 ^ x3)) &lt;= ((x1 ^ x2) ^ x3) &lt; x4 .+ x5
+        if !p
+            nothing
+        end
+    end
+    while x &gt; 0
+        break
+    end
+    for t = 1:10
+        continue
+    end
+    begin
+        x = 1
+        y = 2
+        x + y
+    end
+    0 + (x = 1; y = 2; x + y)
+    let x = 1
+        y = 2
+        x + y
+    end
+    quote
+        $x + $y
+    end
+    try
+        error()
+    catch err
+        nothing
+    end
+    try
+        error()
+    finally
+        nothing
+    end
+    try
+        error()
+    catch err
+        nothing
+    finally
+        nothing
+    end
+    foreach(1:10) do k
+        println(k)
+    end
+    [k for k = 1:10 if isodd(k)]
+    $(Expr(:fallback, 1, 2, 3))
+    end
+end
+
+pprint(ex)
+#=&gt;
+quote
+    module Test
+
+    export f
+
+    using Dates
+
+    import Base: show
+
+    abstract type A{T}
+    end
+
+    struct S{T} &lt;: A{T}
+        x::T
+    end
+
+    const v1 = [1, 2, 3]
+
+    const v2 = Number[1, 2, 3]
+
+    const t1 = (1,)
+
+    const t2 = (1, 2, 3)
+
+    const p = 1 =&gt; 2
+
+    Base.show(Base.stdout)
+
+    Base.@show Base.stdout
+
+    println(&quot;x = $(x)&quot;)
+
+    &quot;Compute nothing&quot;
+    function f(::Number)
+        return nothing
+    end
+
+    g(y) = y &gt; 0 ? y : -y
+
+    h(args...; kw = 0) = (args, kw)
+
+    global G
+
+    if x1 - (x2 - x3) &gt; x1 - x2 - x3
+        if p1 &amp;&amp; p2 || p3 &amp;&amp; p4
+            nothing
+        elseif (p1 || p2) &amp;&amp; (p3 || p4)
+            nothing
+        else
+            nothing
+        end
+    elseif x1 ^ x2 ^ x3 &lt;= (x1 ^ x2) ^ x3 &lt; x4 .+ x5
+        if !(p)
+            nothing
+        end
+    end
+
+    while x &gt; 0
+        break
+    end
+
+    for t = 1:10
+        continue
+    end
+
+    begin
+        x = 1
+        y = 2
+        x + y
+    end
+
+    0 + (x = 1; y = 2; x + y)
+
+    let x = 1
+        y = 2
+        x + y
+    end
+
+    quote
+        $(x) + $(y)
+    end
+
+    try
+        error()
+    catch err
+        nothing
+    end
+
+    try
+        error()
+    finally
+        nothing
+    end
+
+    try
+        error()
+    catch err
+        nothing
+    finally
+        nothing
+    end
+
+    foreach(1:10) do k
+        println(k)
+    end
+
+    [k for k = 1:10 if isodd(k)]
+
+    $(Expr(:fallback, 1, 2, 3))
+
+    end
+end
+=#</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../api/">« API Reference</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 30 March 2021 08:45">Tuesday 30 March 2021</span>. Using Julia version 1.6.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
