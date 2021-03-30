@@ -123,7 +123,7 @@ tile_expr(qn::QuoteNode, pr = -1) =
     tile_expr_quoted(qn.value, pr)
 
 identifier(s::Symbol) =
-    Meta.isidentifier(s) || Meta.isoperator(s) || string(s)[1] == '@' ?
+    Base.isidentifier(s) || Base.isoperator(s) || string(s)[1] == '@' ?
         string(s) :
         "var" * repr(string(s))
 
@@ -477,9 +477,9 @@ function tile_expr_call(fn, args, pr)
         sep = ", "
         if fn === :(:) && 2 <= nargs <= 3
             sep = ":"
-        elseif (Meta.isunaryoperator(fn) || fn === :(::)) && nargs == 1
+        elseif (Base.isunaryoperator(fn) || fn === :(::)) && nargs == 1
             prefix = string(fn)
-        elseif (Meta.isbinaryoperator(fn) || fn === :in || fn === :isa) && nargs == 2
+        elseif (Base.isbinaryoperator(fn) || fn === :in || fn === :isa) && nargs == 2
             if fn === :. || fn === :(::)
                 sep = string(fn)
             else
