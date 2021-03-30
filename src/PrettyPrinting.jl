@@ -53,4 +53,24 @@ function pprintln(io::IO, data)
     println(io)
 end
 
+"""
+    quoteof(obj)
+
+Convert an object to its representation in Julia AST.
+
+Implement this method to customize [`pprint`](@ref) on a user-defined type.
+"""
+function quoteof
+end
+
+"""
+    tile(obj)
+
+Convert an object to the corresponding layout expression.
+
+Implement this method to customize [`pprint`](@ref) on a user-defined type.
+"""
+function tile
+end
+
 end

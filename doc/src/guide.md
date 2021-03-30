@@ -281,8 +281,8 @@ implementing function `tile()`, which should map an object to the corresponding
 layout expression.
 
 Continuing with the type `Node` defined in section [Extending
-PrettyPrinting](#Extending-PrettyPrinting), let us give it a custom layout
-generated with `list_layout()`.
+PrettyPrinting](@ref), let us give it a custom layout generated with
+`list_layout()`.
 
     import PrettyPrinting: tile
 
