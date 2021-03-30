@@ -3,9 +3,9 @@
 
 ## v0.3.0
 
-- Customizing with `quoteof()`.
-- Formatting `Expr`.
-- Formatting `Set`.
+- Formatting custom objects with `quoteof()`.
+- Formatting of `Expr` objects.
+- Formatting of `Set` objects.
 
 
 ## v0.2.1
