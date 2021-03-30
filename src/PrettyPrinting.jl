@@ -27,7 +27,7 @@ include("fit.jl")
 """
     pprint([io::IO], data)
 
-Displays the data so that it fits the width of the output screen.
+Display the data so that it fits the width of the output screen.
 """
 pprint(@nospecialize data) =
     pprint(stdout, data)
@@ -43,7 +43,7 @@ end
 """
     pprintln([io::IO], data)
 
-Displays the data using `pprint` and adds a newline.
+Display the data using `pprint` and print a line break.
 """
 pprintln(@nospecialize data) =
     pprintln(stdout, data)

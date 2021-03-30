@@ -8,9 +8,9 @@
 
 *PrettyPrinting* is a Julia library for optimal formatting of composite data
 structures.  It works by generating all possible layouts of the data, and then
-selecting the best layout that fits the terminal width.  The algorithm for
+selecting the best layout that fits the screen width.  The algorithm for
 finding the optimal layout is based upon [Phillip Yelland, A New Approach to
-Optimal Code Formatting, 2016](https://ai.google/research/pubs/pub44667).
+Optimal Code Formatting, 2016][rfmt-paper].
 
 Out of the box, PrettyPrinting can format Julia code and standard Julia
 containers.  It can be easily extended to format custom data structures.
@@ -18,8 +18,8 @@ containers.  It can be easily extended to format custom data structures.
 
 ## Quick Start
 
-If you work with nested data structures in Julia, you may find the way they are
-displayed unsatisfactory.  For example:
+If you work with nested data structures in Julia REPL, you may find the way
+they are displayed unsatisfactory.  For example:
 
 ```julia
 julia> data = [(name = "POLICE",
@@ -28,9 +28,9 @@ julia> data = [(name = "POLICE",
                (name = "OEMC",
                 employees = [(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68),
                              (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])]
-2-element Array{NamedTuple{(:name, :employees),T} where T<:Tuple,1}:
- (name = "POLICE", employees = NamedTuple{(:name, :position, :salary, :rate),Tuple{String,String,Int64,Missing}}[(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing), (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)])
- (name = "OEMC", employees = NamedTuple{(:name, :position, :salary, :rate),Tuple{String,String,Missing,Float64}}[(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68), (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])
+2-element Vector{NamedTuple{(:name, :employees), T} where T<:Tuple}:
+ (name = "POLICE", employees = NamedTuple{(:name, :position, :salary, :rate), Tuple{String, String, Int64, Missing}}[(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing), (name = "NANCY A", position = "POLICE OFFICER", salary = 80016, rate = missing)])
+ (name = "OEMC", employees = NamedTuple{(:name, :position, :salary, :rate), Tuple{String, String, Missing, Float64}}[(name = "LAKENYA A", position = "CROSSING GUARD", salary = missing, rate = 17.68), (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])
 ```
 
 If this is the case, consider using PrettyPrinting.  First, install it with the
@@ -47,8 +47,7 @@ Import the package:
 julia> using PrettyPrinting
 ```
 
-Now you can display complex data structures using function `pprint()`.  For
-example:
+Now you can use `pprint()` to display your complex data.  For example:
 
 ```julia
 julia> pprint(data)
@@ -73,9 +72,9 @@ julia> pprint(data)
 ```
 
 PrettyPrinting knows how to format tuples, named tuples, vectors, sets, and
-dictionaries.  It can also format Julia code.  To format custom data types,
-implement either `PrettyPrinting.quoteof()` or `PrettyPrinting.tile()`, as
-described in the [**Documentation**][doc-url].
+dictionaries.  It can also format Julia code represented as an `Expr` object.
+To format custom data types, implement either `PrettyPrinting.quoteof()` or
+`PrettyPrinting.tile()`, as described in the [**Documentation**][doc-url].
 
 
 [ci-img]: https://github.com/MechanicalRabbit/PrettyPrinting.jl/workflows/CI/badge.svg

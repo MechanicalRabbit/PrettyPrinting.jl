@@ -3,8 +3,14 @@
 
 ## Overview
 
-PrettyPrinting is a Julia library for optimal formatting of composite data
-structures on a fixed-width terminal.
+*PrettyPrinting* is a Julia library for optimal formatting of composite data
+structures.  It works by generating all possible layouts of the data, and then
+selecting the best layout that fits the screen width.  The algorithm for
+finding the optimal layout is based upon [Phillip Yelland, A New Approach to
+Optimal Code Formatting, 2016](https://ai.google/research/pubs/pub44667).
+
+Out of the box, PrettyPrinting can format Julia code and standard Julia
+containers.  It can be easily extended to format custom data structures.
 
 
 ### Installation
@@ -27,7 +33,7 @@ Use the function `pprint()` to print composite data structures formed of nested
 tuples, vectors, and dictionaries.  The data will be formatted to fit the
 screen size.
 
-To demonstrate how to use `pprint()`, we consider a small dataset of city
+To demonstrate how to use `pprint()`, we take a small dataset of city
 departments with associated employees.
 
     data = [(name = "POLICE",
@@ -80,7 +86,7 @@ output stream.
                    (name = "DORIS A", position = "CROSSING GUARD", salary = missing, rate = 19.38)])]
     =#
 
-If you want to add a newline after the output, use the function `pprintln()`.
+To add a line break after the output, use the function `pprintln()`.
 
     pprintln(data[1])
     pprintln(data[2])
@@ -106,10 +112,99 @@ If you want to add a newline after the output, use the function `pprintln()`.
     =#
 
 
+### Formatting Julia code
+
+PrettyPrinting can format Julia code represented as an `Expr` object.  It
+supports a fair subset of Julia syntax including top-level declarations,
+statements, and expressions.
+
+    ex = quote
+        fib(n::Number) = n > 1 ? fib(n-1) + fib(n-2) : n
+        @show fib(10)
+    end
+
+    pprint(ex)
+    #=>
+    quote
+        fib(n::Number) = n > 1 ? fib(n - 1) + fib(n - 2) : n
+        @show fib(10)
+    end
+    =#
+
+
+### Extending PrettyPrinting
+
+It is customary to display Julia objects as a valid Julia expression that
+constructs the object.  The ability of `pprint()` to format Julia code makes it
+easy to implement this functionality for user-defined types.
+
+For example, consider the following hierarchical data type.
+
+    struct Node
+        name::Symbol
+        arms::Vector{Node}
+    end
+
+    Node(name) = Node(name, [])
+
+Let us create a nested tree of this type.
+
+    tree =
+        Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage),
+                                            Node(:anchorite)]),
+                             Node(:anchovy),
+                             Node(:antic, [Node(:anticipation)])]),
+                  Node(:arc, [Node(:arch, [Node(:archduke),
+                                           Node(:archer)])]),
+                  Node(:awl)])
+    #-> Node(:a, DocSrcIndexMd.Node[ … ])
+
+To make `pprint()` format this tree, we need to implement the function
+`quoteof(::Node)`, which should return an `Expr` object.
+
+    import PrettyPrinting: quoteof
+
+    quoteof(n::Node) =
+        if isempty(n.arms)
+            :(Node($(quoteof(n.name))))
+        else
+            :(Node($(quoteof(n.name)), $(quoteof(n.arms))))
+        end
+
+That's it!  Now `pprint()` displays a nicely formatted Julia expression that
+represents the tree.
+
+    pprint(tree)
+    #=>
+    Node(:a,
+         [Node(:an,
+               [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
+                Node(:anchovy),
+                Node(:antic, [Node(:anticipation)])]),
+          Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
+          Node(:awl)])
+    =#
+
+We can even override `show()` to make it display this representation.
+
+    Base.show(io::IO, ::MIME"text/plain", n::Node) =
+        pprint(io, n)
+
+    display(tree)
+    #=>
+    Node(:a,
+         [Node(:an,
+               [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
+                Node(:anchovy),
+                Node(:antic, [Node(:anticipation)])]),
+          Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
+          Node(:awl)])
+    =#
+
+
 ### Layout expressions
 
-PrettyPrinting can be extended to format any custom data structure.  To let
-PrettyPrinting format a data structure, we need to encode its possible layouts
+Internally, PrettyPrinting represents all potential layouts of a data structure
 in the form of a *layout expression*.
 
 We will use the following definitions.
@@ -162,13 +257,14 @@ choice (`|`) operator.
     =#
 
 The pretty-printing engine can search through possible layouts to find the best
-fit, which is expressed as a layout expression without a choice operator.
+fit, which is expressed as a layout expression without the choice operator.
 
     best_fit(l)
     #-> literal("salary") * (literal(" = ") * literal("101442"))
 
-In addition, PrettyPrinting can generate some common layouts.  A
-delimiter-separated pair can be generated with `pair_layout()`.
+In addition to the primitive operations, PrettyPrinting can generate some
+common layouts.  A delimiter-separated pair can be generated with
+`pair_layout()`.
 
     pair_layout(literal("salary"), literal("101442"), sep=" = ")
     #=>
@@ -190,62 +286,43 @@ A delimiter-separated list of items can be generated with `list_layout()`.
     =#
 
 
-### Extending PrettyPrinting
+### Custom layouts
 
-We can make `pprint()` format objects of user-defined types.  For this purpose,
-we must implement the function `tile()`, which should map an object to its
+We can customize how `pprint()` formats objects of a user-defined type by
+implementing function `tile()`, which should map an object to the corresponding
 layout expression.
 
-For example, consider a simple tree structure.
+Continuing with the type `Node` defined in section [Extending
+PrettyPrinting](#Extending-PrettyPrinting), let us give it a custom layout
+generated with `list_layout()`.
 
-    struct Node
-        name::Symbol
-        arms::Vector{Node}
-    end
+    import PrettyPrinting: tile
 
-    Node(name) = Node(name, [])
-
-    tree =
-        Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage),
-                                            Node(:anchorite)]),
-                             Node(:anchovy),
-                             Node(:antic, [Node(:anticipation)])]),
-                  Node(:arc, [Node(:arch, [Node(:archduke),
-                                           Node(:archer)])]),
-                  Node(:awl)])
-    #-> Node(:a, DocSrcIndexMd.Node[ … ])
-
-To make `pprint()` format this tree, we must implement the function
-`tile(::Node)`.  A suitable layout expression for this tree could be generated
-with `list_layout()`.
-
-    import PrettyPrinting:
-        tile
-
-    function tile(tree::Node)
-        if isempty(tree.arms)
-            return literal("Node($(repr(tree.name)))")
+    tile(n::Node) =
+        if isempty(n.arms)
+            literal(n.name)
+        else
+            literal(n.name) *
+            literal(" -> ") *
+            list_layout(tile.(n.arms))
         end
-        return list_layout(tile.(tree.arms),
-                           prefix="Node($(repr(tree.name)), ", par=("[", "])"))
-    end
 
-Now `pprint()` renders a nicely formatted representation of the tree.
+Now `pprint()` will render a new representation of the tree.
 
     pprint(stdout, tree)
     #=>
-    Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
-                         Node(:anchovy),
-                         Node(:antic, [Node(:anticipation)])]),
-              Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
-              Node(:awl)])
+    a -> (an -> (anchor -> (anchorage, anchorite),
+                 anchovy,
+                 antic -> (anticipation)),
+          arc -> (arch -> (archduke, archer)),
+          awl)
     =#
 
+In summary, there are two ways to customize `pprint()` for a user-defined type
+`T`.
 
-## Acknowledgements
-
-The algorithm for finding the optimal layout is based upon
-[Phillip Yelland, A New Approach to Optimal Code Formatting, 2016](https://ai.google/research/pubs/pub44667).
+1. Define `PrettyPrinting.quoteof(::T)`, which should return an `Expr` object.
+2. Define `PrettyPrinting.tile(::T)`, which should return a layout expression.
 
 
 ## API Reference

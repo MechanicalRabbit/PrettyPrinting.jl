@@ -3,7 +3,9 @@
 
 ## v0.3.0
 
-- Support for `Set`.
+- Customizing with `quoteof()`.
+- Formatting `Expr`.
+- Formatting `Set`.
 
 
 ## v0.2.1
