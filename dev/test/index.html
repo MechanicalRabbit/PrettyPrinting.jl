@@ -238,18 +238,19 @@ intuition)
         return
     end
     g(y) = y &gt; 0 ? y : -y
+    h(args...; kw = 0) = (args, kw)
     global G
-    if (x1 + x2) &gt; x3
+    if (x1 - (x2 - x3)) &gt; ((x1 - x2) - x3)
         if p1 &amp;&amp; p2 || p3 &amp;&amp; p4
-            1
+            nothing
         elseif (p1 || p2) &amp;&amp; (p3 || p4)
-            2
+            nothing
         else
-            3
+            nothing
         end
-    elseif x1 &lt;= x2 &lt; x3
+    elseif (x1 ^ (x2 ^ x3)) &lt;= ((x1 ^ x2) ^ x3) &lt; x4 .+ x5
         if !p
-            4
+            nothing
         end
     end
     while x &gt; 0
@@ -258,31 +259,41 @@ intuition)
     for t = 1:10
         continue
     end
+    begin
+        x = 1
+        y = 2
+        x + y
+    end
+    0 + (x = 1; y = 2; x + y)
     let x = 1
         y = 2
         x + y
     end
-    try
-        error()
-    catch err
-        1
-    end
-    try
-        error()
-    finally
-        2
+    quote
+        $x + $y
     end
     try
         error()
     catch err
-        1
+        nothing
+    end
+    try
+        error()
     finally
-        2
+        nothing
+    end
+    try
+        error()
+    catch err
+        nothing
+    finally
+        nothing
     end
     foreach(1:10) do k
         println(k)
     end
     [k for k = 1:10 if isodd(k)]
+    $(Expr(:fallback, 1, 2, 3))
     end
 end
 
@@ -327,19 +338,21 @@ quote
 
     g(y) = y &gt; 0 ? y : -y
 
+    h(args...; kw = 0) = (args, kw)
+
     global G
 
-    if x1 + x2 &gt; x3
+    if x1 - (x2 - x3) &gt; x1 - x2 - x3
         if p1 &amp;&amp; p2 || p3 &amp;&amp; p4
-            1
+            nothing
         elseif (p1 || p2) &amp;&amp; (p3 || p4)
-            2
+            nothing
         else
-            3
+            nothing
         end
-    elseif x1 &lt;= x2 &lt; x3
+    elseif x1 ^ x2 ^ x3 &lt;= (x1 ^ x2) ^ x3 &lt; x4 .+ x5
         if !(p)
-            4
+            nothing
         end
     end
 
@@ -351,30 +364,41 @@ quote
         continue
     end
 
+    begin
+        x = 1
+        y = 2
+        x + y
+    end
+
+    0 + (x = 1; y = 2; x + y)
+
     let x = 1
         y = 2
         x + y
     end
 
+    quote
+        $(x) + $(y)
+    end
+
     try
         error()
     catch err
-        1
         nothing
     end
 
     try
         error()
     finally
-        2
+        nothing
     end
 
     try
         error()
     catch err
-        1
+        nothing
     finally
-        2
+        nothing
     end
 
     foreach(1:10) do k
@@ -383,6 +407,8 @@ quote
 
     [k for k = 1:10 if isodd(k)]
 
+    $(Expr(:fallback, 1, 2, 3))
+
     end
 end
-=#</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../api/">« API Reference</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 30 March 2021 07:44">Tuesday 30 March 2021</span>. Using Julia version 1.6.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+=#</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../api/">« API Reference</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 30 March 2021 08:21">Tuesday 30 March 2021</span>. Using Julia version 1.6.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
