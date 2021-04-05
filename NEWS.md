@@ -1,6 +1,11 @@
 # Release Notes
 
 
+## v0.3.1
+
+- Wrap the type argument of `ref` in parentheses, if necessary.
+
+
 ## v0.3.0
 
 - Formatting custom objects with `quoteof()`.
