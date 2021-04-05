@@ -35,7 +35,7 @@ The built-in `print()` function prints this data on a single line, making the
 output unreadable.
 
     print(data)
-    #-> NamedTuple{ … } where T<:Tuple[(name = "POLICE", employees = NamedTuple{ … }[ … ]) … ]
+    #-> NamedTuple … [(name = "POLICE", employees = NamedTuple{ … }[(name = "JEFFERY A", position = "SERGEANT", salary = 101442, rate = missing), … ]) … ]
 
 By contrast, `pprint()` formats the data to fit the screen size.
 
