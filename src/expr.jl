@@ -221,9 +221,9 @@ function tile_expr(ex::Expr, pr = -1)
     elseif @isexpr ex Expr(:vect || :comprehension, args...)
         return list_layout(Layout[tile_expr(arg, 0) for arg in args], par = ("[", "]"))
     elseif @isexpr ex Expr(:ref || :typed_comprehension, t, args...)
-        return list_layout(Layout[tile_expr(arg, 0) for arg in args], prefix = tile_expr(t, 0), par = ("[", "]"))
+        return tile_expr_ref(t, args)
     elseif @isexpr ex Expr(:curly, t, args...)
-        return list_layout(Layout[tile_expr(arg, 0) for arg in args], prefix = tile_expr(t, 0), par = ("{", "}"))
+        return tile_expr_ref(t, args, par = ("{", "}"))
     elseif @isexpr ex Expr(:string, args...)
         return tile_expr_string(args)
     elseif @isexpr ex Expr(:quote, arg)
@@ -550,6 +550,15 @@ function tile_expr_macro(fn, args, pr)
         sep = ", "
     end
     list_layout(Layout[tile_expr(arg, 0) for arg in args], prefix = prefix, par = par, sep = sep)
+end
+
+const dot_precedence = Base.operator_precedence(:.)
+
+function tile_expr_ref(t, args; par = ("[", "]"))
+    prefix = tile_expr(t, dot_precedence - 1)
+    list_layout(Layout[tile_expr(arg, 0) for arg in args],
+                prefix = prefix,
+                par = par)
 end
 
 function tile_expr_string(chunks)
