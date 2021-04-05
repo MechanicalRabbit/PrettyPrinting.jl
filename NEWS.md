@@ -1,6 +1,11 @@
 # Release Notes
 
 
+## v0.3.2
+
+- Fixed emitting `let` with a definition block.
+
+
 ## v0.3.1
 
 - Wrap the type argument of `ref` in parentheses, if necessary.
