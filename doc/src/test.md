@@ -358,6 +358,9 @@ is supported.
         end
         0 + (x = 1; y = 2; x + y)
         let x = 1
+            x + x
+        end
+        let x = 1,
             y = 2
             x + y
         end
@@ -465,6 +468,10 @@ is supported.
         0 + (x = 1; y = 2; x + y)
 
         let x = 1
+            x + x
+        end
+
+        let x = 1,
             y = 2
             x + y
         end

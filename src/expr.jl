@@ -383,7 +383,14 @@ end
 
 function tile_expr_let(decl, body)
     lt = literal(:let)
-    decl_lt = tile_exprs(decl)
+    if @isexpr decl Expr(:block, arg1, rest...)
+        decl_lt = tile_expr(arg1, 0)
+        for arg in rest
+            decl_lt = decl_lt * literal(",") / tile_expr(arg, 0)
+        end
+    else
+        decl_lt = tile_expr(decl)
+    end
     if decl_lt !== ZERO
         lt = lt * indent(1) * decl_lt
     end
