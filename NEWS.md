@@ -3,6 +3,7 @@
 
 ## v0.4.0
 
+* Serialize multi-line strings as triple-quoted literals.
 * Require Julia ≥ 1.6.
 
 

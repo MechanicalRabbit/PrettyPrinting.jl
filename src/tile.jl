@@ -175,6 +175,52 @@ tile(obj) = tile_expr_or_repr(quoteof(obj))
 
 # Layouts for standard types.
 
+function tile(s::String)
+    lt = literal(repr(s))
+    if '"' in s
+        if endswith(s, '"')
+            es = escape_string(s[1:end - 1], "") * "\\\""
+        else
+            es = escape_string(s, "")
+        end
+        lt = lt | literal("\"\"\"" * replace(es, "\"\"\"" => "\"\"\\\"") * "\"\"\"")
+    end
+    if '\n' in s
+        lines = split(s, '\n')
+        n = length(lines)
+        for k = 1:n
+            line = lines[k]
+            if k == n && endswith(line, '"')
+                line = escape_string(line[1:end - 1], "") * "\\\""
+            else
+                line = escape_string(line, "")
+            end
+            if '"' in line
+                line = replace(line, "\"\"\"" => "\"\"\\\"")
+            end
+            lines[k] = line
+        end
+        lines[end] *= "\"\"\""
+        indented = true
+        for line in lines
+            if !isempty(line) && !(first(line) in (' ', '\t'))
+                indented = false
+                break
+            end
+        end
+        if indented
+            line = lines[end]
+            lines[end] = "\\x" * string(UInt32(first(line)), base = 16, pad = 2) * line[2:end]
+        end
+        mlt = literal("\"\"\"")
+        for line in lines
+            mlt = mlt / literal(line)
+        end
+        lt = lt | mlt
+    end
+    lt
+end
+
 tile(p::Pair) =
     pair_layout(tile(p.first), tile(p.second))
 

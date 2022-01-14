@@ -155,6 +155,57 @@ pprint(Set([:deinstitutionalization, :counterrevolutionaries]))
 ```
 
 
+## Formatting Strings
+
+The function `pprint()` can serialize string values.
+
+    pprint("deinstitutionalization counterrevolutionaries")
+    #-> "deinstitutionalization counterrevolutionaries"
+
+When the string contains a double quote character, `pprint()` may serialize
+it as a triple quoted literal.
+
+    pprint(resize(40), "\"notation\", \"nation\", \"initialization\", \"intuition\".")
+    #-> """"notation", "nation", "initialization", "intuition"."""
+
+Even in a triple quoted literal some `"` characters must be escaped.
+
+    pprint(resize(40), "\"\"\"\"\"deinstitutionalization counterrevolutionaries\"\"\"\"\"")
+    #-> """""\"""deinstitutionalization counterrevolutionaries""\""\""""
+
+Triple quoted format may also be used for a multi-line string.
+
+    pprint(resize(40), "\"notation\"\n\"nation\"\n\"initialization\"\n\"intuition\"\n")
+    #=>
+    """
+    "notation"
+    "nation"
+    "initialization"
+    "intuition"
+    """
+    =#
+
+For multi-line strings, escaping `"` may also be necessary.
+
+    pprint(resize(40), "\"\"\"\"\"deinstitutionalization\ncounterrevolutionaries\"\"\"\"\"")
+    #=>
+    """
+    ""\"""deinstitutionalization
+    counterrevolutionaries""\""\""""
+    =#
+
+For an indented multi-line string, the indentation level must be indicated.
+
+    pprint(resize(40), "  notation\n  nation\n  initialization\n  intuition")
+    #=>
+    """
+      notation
+      nation
+      initialization
+    \x20 intuition"""
+    =#
+
+
 ## Using `pair_layout()`
 
 Function `pair_layout()` generates a layout expression for `Pair`-like objects.
