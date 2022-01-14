@@ -16,8 +16,8 @@ Out of the box, PrettyPrinting can format Julia code and standard Julia
 containers.  It can be easily extended to format custom data structures.
 
 To learn more about PrettyPrinting, check the [**Quick Start**](#quick-start)
-below, read the [**Documentation**][doc-url] or watch the
-[JuliaCon 2021 Talk][juliacon2021-url].
+below, read the [**Documentation**][doc-url], or watch the
+[**Presentation at JuliaCon 2021**][juliacon2021-url] ([**slides**][juliacon2021-slides]).
 
 [![PrettyPrinting | JuliaCon 2021][juliacon2021-img]][juliacon2021-url]
 
@@ -96,3 +96,4 @@ To format custom data types, implement either `PrettyPrinting.quoteof()` or
 [rfmt-paper]: https://ai.google/research/pubs/pub44667
 [juliacon2021-img]: https://img.youtube.com/vi/Pa92w_ACp_c/maxresdefault.jpg
 [juliacon2021-url]: https://www.youtube.com/watch?v=Pa92w_ACp_c
+[juliacon2021-slides]: https://github.com/MechanicalRabbit/PrettyPrinting.jl/files/7870322/PrettyPrinting-JuliaCon2021.pdf
