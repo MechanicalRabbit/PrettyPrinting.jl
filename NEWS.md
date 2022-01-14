@@ -1,6 +1,11 @@
 # Release Notes
 
 
+## v0.4.0
+
+* Require Julia ≥ 1.6.
+
+
 ## v0.3.2
 
 - Fixed emitting `let` with a definition block.

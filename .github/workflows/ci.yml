@@ -8,18 +8,18 @@ on:
   - cron: '0 0 1 * *'
 jobs:
   test:
-    name: Test on ${{ matrix.name }}
+    name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
         - name: Julia LTS / Linux 64bit
-          version: '1.0'
+          version: '1.6'
           os: ubuntu-latest
           arch: x64
         - name: Julia LTS / Linux 32bit
-          version: '1.0'
+          version: '1.6'
           os: ubuntu-latest
           arch: x86
         - name: Julia Stable / Linux 64bit
@@ -69,22 +69,16 @@ jobs:
     - uses: julia-actions/julia-buildpkg@v1
     - uses: julia-actions/julia-runtest@v1
     - uses: julia-actions/julia-processcoverage@v1
-    - uses: codecov/codecov-action@v1
+    - uses: codecov/codecov-action@v2
       with:
         file: lcov.info
-  doc:
+  docs:
     name: Documentation
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: julia-actions/setup-julia@v1
-      with:
-        version: '1'
-    - run: |
-        julia --project=doc -e '
-          using Pkg
-          Pkg.develop(PackageSpec(path=pwd()))
-          Pkg.instantiate()'
-    - run: julia --project=doc doc/make.jl
+    - uses: julia-actions/julia-buildpkg@v1
+    - uses: julia-actions/julia-docdeploy@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
