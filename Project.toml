@@ -7,9 +7,3 @@ version = "0.4.0"
 
 [compat]
 julia = "1.6"
-
-[extras]
-NarrativeTest = "9563631e-acd4-5dd8-bebb-4cf36518960d"
-
-[targets]
-test = ["NarrativeTest"]
