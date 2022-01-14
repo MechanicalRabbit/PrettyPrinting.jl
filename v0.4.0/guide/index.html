@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Usage Guide · PrettyPrinting.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">PrettyPrinting.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Usage Guide</a><ul class="internal"><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#Using-PrettyPrinting"><span>Using PrettyPrinting</span></a></li><li><a class="tocitem" href="#Formatting-Julia-Code"><span>Formatting Julia Code</span></a></li><li><a class="tocitem" href="#Extending-PrettyPrinting"><span>Extending PrettyPrinting</span></a></li><li><a class="tocitem" href="#Layout-Expressions"><span>Layout Expressions</span></a></li><li><a class="tocitem" href="#Custom-Layouts"><span>Custom Layouts</span></a></li></ul></li><li><a class="tocitem" href="../api/">API Reference</a></li><li><a class="tocitem" href="../test/">Test Suite</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Usage Guide</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Usage Guide</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/MechanicalRabbit/PrettyPrinting.jl/blob/master/docs/src/guide.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Usage-Guide"><a class="docs-heading-anchor" href="#Usage-Guide">Usage Guide</a><a id="Usage-Guide-1"></a><a class="docs-heading-anchor-permalink" href="#Usage-Guide" title="Permalink"></a></h1><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><p>Use the Julia package manager.</p><pre><code class="language-julia hljs">julia&gt; using Pkg
+julia&gt; Pkg.add(&quot;PrettyPrinting&quot;)</code></pre><h2 id="Using-PrettyPrinting"><a class="docs-heading-anchor" href="#Using-PrettyPrinting">Using PrettyPrinting</a><a id="Using-PrettyPrinting-1"></a><a class="docs-heading-anchor-permalink" href="#Using-PrettyPrinting" title="Permalink"></a></h2><p>First, import the module.</p><pre><code class="language-julia hljs">using PrettyPrinting</code></pre><p>Use the function <code>pprint()</code> to print composite data structures formed of nested tuples, vectors, and dictionaries.  The data will be formatted to fit the screen size.</p><p>To demonstrate how to use <code>pprint()</code>, we take a small dataset of city departments with associated employees.</p><pre><code class="language-julia hljs">data = [(name = &quot;POLICE&quot;,
+         employees = [(name = &quot;JEFFERY A&quot;, position = &quot;SERGEANT&quot;, salary = 101442, rate = missing),
+                      (name = &quot;NANCY A&quot;, position = &quot;POLICE OFFICER&quot;, salary = 80016, rate = missing)]),
+        (name = &quot;OEMC&quot;,
+         employees = [(name = &quot;LAKENYA A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 17.68),
+                      (name = &quot;DORIS A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 19.38)])]</code></pre><p>The built-in <code>print()</code> function prints this data on a single line, making the output unreadable.</p><pre><code class="language-julia hljs">print(data)
+#-&gt; NamedTuple … [(name = &quot;POLICE&quot;, employees = NamedTuple{ … }[(name = &quot;JEFFERY A&quot;, position = &quot;SERGEANT&quot;, salary = 101442, rate = missing), … ]) … ]</code></pre><p>By contrast, <code>pprint()</code> formats the data to fit the screen size.</p><pre><code class="language-julia hljs">pprint(data)
+#=&gt;
+[(name = &quot;POLICE&quot;,
+  employees = [(name = &quot;JEFFERY A&quot;,
+                position = &quot;SERGEANT&quot;,
+                salary = 101442,
+                rate = missing),
+               (name = &quot;NANCY A&quot;,
+                position = &quot;POLICE OFFICER&quot;,
+                salary = 80016,
+                rate = missing)]),
+ (name = &quot;OEMC&quot;,
+  employees = [(name = &quot;LAKENYA A&quot;,
+                position = &quot;CROSSING GUARD&quot;,
+                salary = missing,
+                rate = 17.68),
+               (name = &quot;DORIS A&quot;,
+                position = &quot;CROSSING GUARD&quot;,
+                salary = missing,
+                rate = 19.38)])]
+=#</code></pre><p>The width of the output is controlled by the <code>displaysize</code> property of the output stream.</p><pre><code class="language-julia hljs">pprint(IOContext(stdout, :displaysize =&gt; (24, 100)), data)
+#=&gt;
+[(name = &quot;POLICE&quot;,
+  employees = [(name = &quot;JEFFERY A&quot;, position = &quot;SERGEANT&quot;, salary = 101442, rate = missing),
+               (name = &quot;NANCY A&quot;, position = &quot;POLICE OFFICER&quot;, salary = 80016, rate = missing)]),
+ (name = &quot;OEMC&quot;,
+  employees = [(name = &quot;LAKENYA A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 17.68),
+               (name = &quot;DORIS A&quot;, position = &quot;CROSSING GUARD&quot;, salary = missing, rate = 19.38)])]
+=#</code></pre><p>To add a line break after the output, use the function <code>pprintln()</code>.</p><pre><code class="language-julia hljs">pprintln(data[1])
+pprintln(data[2])
+#=&gt;
+(name = &quot;POLICE&quot;,
+ employees = [(name = &quot;JEFFERY A&quot;,
+               position = &quot;SERGEANT&quot;,
+               salary = 101442,
+               rate = missing),
+              (name = &quot;NANCY A&quot;,
+               position = &quot;POLICE OFFICER&quot;,
+               salary = 80016,
+               rate = missing)])
+(name = &quot;OEMC&quot;,
+ employees = [(name = &quot;LAKENYA A&quot;,
+               position = &quot;CROSSING GUARD&quot;,
+               salary = missing,
+               rate = 17.68),
+              (name = &quot;DORIS A&quot;,
+               position = &quot;CROSSING GUARD&quot;,
+               salary = missing,
+               rate = 19.38)])
+=#</code></pre><h2 id="Formatting-Julia-Code"><a class="docs-heading-anchor" href="#Formatting-Julia-Code">Formatting Julia Code</a><a id="Formatting-Julia-Code-1"></a><a class="docs-heading-anchor-permalink" href="#Formatting-Julia-Code" title="Permalink"></a></h2><p>PrettyPrinting can format Julia code represented as an <code>Expr</code> object.  It supports a fair subset of Julia syntax including top-level declarations, statements, and expressions.</p><pre><code class="language-julia hljs">ex = quote
+    fib(n::Number) = n &gt; 1 ? fib(n-1) + fib(n-2) : n
+    @show fib(10)
+end
+
+pprint(ex)
+#=&gt;
+quote
+    fib(n::Number) = n &gt; 1 ? fib(n - 1) + fib(n - 2) : n
+    @show fib(10)
+end
+=#</code></pre><h2 id="Extending-PrettyPrinting"><a class="docs-heading-anchor" href="#Extending-PrettyPrinting">Extending PrettyPrinting</a><a id="Extending-PrettyPrinting-1"></a><a class="docs-heading-anchor-permalink" href="#Extending-PrettyPrinting" title="Permalink"></a></h2><p>It is customary to display a Julia object as a valid Julia expression that constructs the object.  The ability of <code>pprint()</code> to format Julia code makes it easy to implement this functionality for user-defined types.</p><p>For example, consider the following hierarchical data type.</p><pre><code class="language-julia hljs">struct Node
+    name::Symbol
+    arms::Vector{Node}
+end
+
+Node(name) = Node(name, [])</code></pre><p>Let us create a nested tree of this type.</p><pre><code class="language-julia hljs">tree =
+    Node(:a, [Node(:an, [Node(:anchor, [Node(:anchorage),
+                                        Node(:anchorite)]),
+                         Node(:anchovy),
+                         Node(:antic, [Node(:anticipation)])]),
+              Node(:arc, [Node(:arch, [Node(:archduke),
+                                       Node(:archer)])]),
+              Node(:awl)])
+#-&gt; Node(:a, DocsSrcGuideMd.Node[ … ])</code></pre><p>To make <code>pprint()</code> format this tree, we need to implement the function <code>quoteof(::Node)</code>, which should return an <code>Expr</code> object.</p><pre><code class="language-julia hljs">import PrettyPrinting: quoteof
+
+quoteof(n::Node) =
+    if isempty(n.arms)
+        :(Node($(quoteof(n.name))))
+    else
+        :(Node($(quoteof(n.name)), $(quoteof(n.arms))))
+    end</code></pre><p>That&#39;s it!  Now <code>pprint()</code> displays a nicely formatted Julia expression that represents the tree.</p><pre><code class="language-julia hljs">pprint(tree)
+#=&gt;
+Node(:a,
+     [Node(:an,
+           [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
+            Node(:anchovy),
+            Node(:antic, [Node(:anticipation)])]),
+      Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
+      Node(:awl)])
+=#</code></pre><p>We can even override <code>show()</code> to make it display this representation.</p><pre><code class="language-julia hljs">Base.show(io::IO, ::MIME&quot;text/plain&quot;, n::Node) =
+    pprint(io, n)
+
+display(tree)
+#=&gt;
+Node(:a,
+     [Node(:an,
+           [Node(:anchor, [Node(:anchorage), Node(:anchorite)]),
+            Node(:anchovy),
+            Node(:antic, [Node(:anticipation)])]),
+      Node(:arc, [Node(:arch, [Node(:archduke), Node(:archer)])]),
+      Node(:awl)])
+=#</code></pre><h2 id="Layout-Expressions"><a class="docs-heading-anchor" href="#Layout-Expressions">Layout Expressions</a><a id="Layout-Expressions-1"></a><a class="docs-heading-anchor-permalink" href="#Layout-Expressions" title="Permalink"></a></h2><p>Internally, PrettyPrinting represents all potential layouts of a data structure in the form of a <em>layout expression</em>.</p><p>We will use the following definitions.</p><pre><code class="language-julia hljs">using PrettyPrinting: best_fit, indent, list_layout, literal, pair_layout</code></pre><p>A fixed single-line layout is created with <code>literal()</code>.</p><pre><code class="language-julia hljs">ll = literal(&quot;salary&quot;)
+#-&gt; literal(&quot;salary&quot;)</code></pre><p>Layouts could be combined using horizontal (<code>*</code>) and vertical (<code>/</code>) composition operators.</p><pre><code class="language-julia hljs">lhz = literal(&quot;salary&quot;) * literal(&quot; = &quot;) * literal(&quot;101442&quot;)
+#-&gt; literal(&quot;salary&quot;) * literal(&quot; = &quot;) * literal(&quot;101442&quot;)
+
+lvt = literal(&quot;salary&quot;) * literal(&quot; =&quot;) /
+      indent(4) * literal(&quot;101442&quot;)
+#-&gt; literal(&quot;salary&quot;) * literal(&quot; =&quot;) / indent(4) * literal(&quot;101442&quot;)</code></pre><p>Here, <code>indent(4)</code> is equivalent to <code>literal(&quot; &quot;^4)</code>.</p><p>Function <code>pprint()</code> serializes the layout.</p><pre><code class="language-julia hljs">pprint(ll)
+#-&gt; salary
+
+pprint(lhz)
+#-&gt; salary = 101442
+
+pprint(lvt)
+#=&gt;
+salary =
+    101442
+=#</code></pre><p>To indicate that we can choose between several different layouts, we use the choice (<code>|</code>) operator.</p><pre><code class="language-julia hljs">l = lhz | lvt
+#=&gt;
+literal(&quot;salary&quot;) * literal(&quot; = &quot;) * literal(&quot;101442&quot;) |
+literal(&quot;salary&quot;) * literal(&quot; =&quot;) / indent(4) * literal(&quot;101442&quot;)
+=#</code></pre><p>The pretty-printing engine can search through all potential layouts to find the best fit, which is expressed as a layout expression without the choice operator.</p><pre><code class="language-julia hljs">best_fit(l)
+#-&gt; literal(&quot;salary&quot;) * (literal(&quot; = &quot;) * literal(&quot;101442&quot;))</code></pre><p>In addition to the primitive operations, PrettyPrinting can generate some common layouts.  A delimiter-separated pair can be generated with <code>pair_layout()</code>.</p><pre><code class="language-julia hljs">pair_layout(literal(&quot;salary&quot;), literal(&quot;101442&quot;), sep=&quot; = &quot;)
+#=&gt;
+(literal(&quot;salary&quot;) * literal(&quot; = &quot;) |
+ literal(&quot;salary&quot;) * literal(&quot; =&quot;) / indent(4)) *
+literal(&quot;101442&quot;)
+=#</code></pre><p>A delimiter-separated list of items can be generated with <code>list_layout()</code>.</p><pre><code class="language-julia hljs">list_layout([literal(&quot;salary = 101442&quot;), literal(&quot;rate = missing&quot;)])
+#=&gt;
+(literal(&quot;(&quot;) | literal(&quot;(&quot;) / indent(4)) *
+(literal(&quot;salary = 101442&quot;) * literal(&quot;,&quot;) / literal(&quot;rate = missing&quot;)) *
+literal(&quot;)&quot;) |
+literal(&quot;(&quot;) *
+(literal(&quot;salary = 101442&quot;) * literal(&quot;, &quot;) * literal(&quot;rate = missing&quot;)) *
+literal(&quot;)&quot;)
+=#</code></pre><h2 id="Custom-Layouts"><a class="docs-heading-anchor" href="#Custom-Layouts">Custom Layouts</a><a id="Custom-Layouts-1"></a><a class="docs-heading-anchor-permalink" href="#Custom-Layouts" title="Permalink"></a></h2><p>We can customize how <code>pprint()</code> formats objects of a user-defined type by implementing function <code>tile()</code>, which should map an object to the corresponding layout expression.</p><p>Continuing with the type <code>Node</code> defined in section <a href="#Extending-PrettyPrinting">Extending PrettyPrinting</a>, let us give it a custom layout generated with <code>list_layout()</code>.</p><pre><code class="language-julia hljs">import PrettyPrinting: tile
+
+tile(n::Node) =
+    if isempty(n.arms)
+        literal(n.name)
+    else
+        literal(n.name) *
+        literal(&quot; -&gt; &quot;) *
+        list_layout(tile.(n.arms))
+    end</code></pre><p>Now <code>pprint()</code> will render a new representation of the tree.</p><pre><code class="language-julia hljs">pprint(stdout, tree)
+#=&gt;
+a -&gt; (an -&gt; (anchor -&gt; (anchorage, anchorite),
+             anchovy,
+             antic -&gt; (anticipation)),
+      arc -&gt; (arch -&gt; (archduke, archer)),
+      awl)
+=#</code></pre><p>In summary, there are two ways to customize <code>pprint()</code> for a user-defined type <code>T</code>.</p><ol><li>Define <code>PrettyPrinting.quoteof(::T)</code>, which should return an <code>Expr</code> object.</li><li>Define <code>PrettyPrinting.tile(::T)</code>, which should return a layout expression.</li></ol></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../api/">API Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.10 on <span class="colophon-date" title="Friday 14 January 2022 13:03">Friday 14 January 2022</span>. Using Julia version 1.7.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
