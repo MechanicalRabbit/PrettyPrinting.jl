@@ -145,7 +145,7 @@ Let us create a nested tree of this type.
                   Node(:arc, [Node(:arch, [Node(:archduke),
                                            Node(:archer)])]),
                   Node(:awl)])
-    #-> Node(:a, DocsSrcGuideMd.Node[ … ])
+    #-> Node(:a, …)
 
 To make `pprint()` format this tree, we need to implement the function
 `quoteof(::Node)`, which should return an `Expr` object.
