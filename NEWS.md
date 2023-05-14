@@ -1,6 +1,11 @@
 # Release Notes
 
 
+## v0.4.1
+
+* Enable precompilation.
+
+
 ## v0.4.0
 
 * Serialize multi-line strings as triple-quoted literals.
