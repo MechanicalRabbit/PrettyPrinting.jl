@@ -224,7 +224,7 @@ end
 tile(p::Pair) =
     pair_layout(tile(p.first), tile(p.second))
 
-tile(t::Tuple) =
+tile(@nospecialize t::Tuple) =
     if length(t) == 1
         literal("(") * tile(t[1]) * literal(",)")
     else
@@ -242,7 +242,7 @@ tile(s::Set) =
                     prefix=:Set)
     end
 
-tile(t::NamedTuple) =
+tile(@nospecialize t::NamedTuple) =
     if length(t) == 1
         ((key, val),) = pairs(t)
         literal("(") * pair_layout(literal(key), tile(val), sep=" = ") * literal(",)")

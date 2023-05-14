@@ -73,4 +73,6 @@ Implement this method to customize [`pprint`](@ref) on a user-defined type.
 function tile
 end
 
+include("precompile.jl")
+
 end
