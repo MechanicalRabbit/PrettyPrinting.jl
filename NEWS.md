@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.4.2
+
+* Fix serializing `(x -> y)(z)`.
+
 
 ## v0.4.1
 
