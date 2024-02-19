@@ -523,7 +523,11 @@ function tile_expr_call(fn, args, pr)
                         sep = sep)
         end
     else
-        list_layout(Layout[tile_expr(arg, 0) for arg in args], prefix = tile_expr(fn))
+        prefix = tile_expr(fn)
+        if !@isexpr fn Expr(:. || :curly || :macroname, _...)
+            prefix = literal("(") * prefix * literal(")")
+        end
+        list_layout(Layout[tile_expr(arg, 0) for arg in args], prefix = prefix)
     end
 end
 

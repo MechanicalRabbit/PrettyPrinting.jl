@@ -373,6 +373,7 @@ is supported.
         const t1 = (1,)
         const t2 = (1,2,3)
         const p = 1 => 2
+        (x->y)(z)
         Base.show(Base.stdout)
         Base.@show Base.stdout
         println("x = $x")
@@ -470,6 +471,8 @@ is supported.
         const t2 = (1, 2, 3)
 
         const p = 1 => 2
+
+        (x -> y)(z)
 
         Base.show(Base.stdout)
 
