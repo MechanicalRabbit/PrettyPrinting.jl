@@ -377,6 +377,7 @@ is supported.
         Base.show(Base.stdout)
         Base.@show Base.stdout
         println("x = $x")
+        `echo "hello \`world\`"`
         "Compute nothing"
         function f(::Number)
             return
@@ -479,6 +480,8 @@ is supported.
         Base.@show Base.stdout
 
         println("x = $(x)")
+
+        `echo "hello \`world\`"`
 
         "Compute nothing"
         function f(::Number)
