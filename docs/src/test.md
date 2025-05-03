@@ -374,8 +374,8 @@ is supported.
         const t2 = (1,2,3)
         const p = 1 => 2
         (x->y)(z)
-        Base.show(Base.stdout)
-        Base.@show Base.stdout
+        Base.show(Base.nothing)
+        Base.@show Base.@something Base.nothing
         println("x = $x")
         `echo "hello \`world\`"`
         "Compute nothing"
@@ -475,9 +475,9 @@ is supported.
 
         (x -> y)(z)
 
-        Base.show(Base.stdout)
+        Base.show(Base.nothing)
 
-        Base.@show Base.stdout
+        Base.@show Base.@something(Base.nothing)
 
         println("x = $(x)")
 

@@ -555,14 +555,12 @@ end
 
 function tile_expr_macro(fn, args, pr)
     prefix = tile_expr(fn, pr)
-    if pr < 0 && length(args) <= 1
-        par = (" ", "")
-        sep = " "
-    else
-        par = ("(", ")")
-        sep = ", "
+    nblt = nothing
+    if pr < 0
+        nblt = nobreak(list_layout(Layout[tile_expr(arg, 0) for arg in args], prefix = prefix, par = (" ", ""), sep = " "))
     end
-    list_layout(Layout[tile_expr(arg, 0) for arg in args], prefix = prefix, par = par, sep = sep)
+    lt = list_layout(Layout[tile_expr(arg, 0) for arg in args], prefix = prefix)
+    nblt !== nothing ? nblt | lt : lt
 end
 
 const dot_precedence = Base.operator_precedence(:.)
