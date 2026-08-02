@@ -1,5 +1,12 @@
 # Release Notes
 
+## v0.4.3
+
+* Serialize backtick literals.
+* Allow more than one space-separated macro argument.
+* Require Julia ≥ 1.10.
+
+
 ## v0.4.2
 
 * Fix serializing `(x -> y)(z)`.
